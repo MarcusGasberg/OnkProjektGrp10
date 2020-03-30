@@ -1,0 +1,75 @@
+title TSEIS
+
+participant Stock Requester
+participant Stock Provider
+participant Stock Broker
+participant Stock Market Controller
+participant Taxing Controller
+participant Payment Contoller
+participant UserDB
+participant Bank
+
+==List Stock For Sale==
+Stock Provider->Stock Market Controller:ListStockForSale
+activate Stock Market Controller
+Stock Provider<--Stock Market Controller:Listing Created
+deactivate Stock Market Controller
+space 
+
+==Show Available Stocks==
+Stock Requester->Stock Market Controller:GetStocks() 
+activate Stock Market Controller
+Stock Market Controller-->Stock Requester:Stocks[]
+deactivate Stock Market Controller
+space
+
+==Purchase Stock==
+Stock Requester->Stock Broker:Purchase Stock
+activate Stock Broker
+Stock Broker->Stock Market Controller:Get Stock
+deactivate Stock Broker
+activate Stock Market Controller
+Stock Broker<--Stock Market Controller:Stock
+deactivate Stock Market Controller
+activate Stock Broker
+Stock Broker->Payment Contoller:Purchase Stock
+deactivate Stock Broker
+activate Payment Contoller
+Payment Contoller->UserDB:Get Users
+deactivate Payment Contoller
+activate UserDB
+Payment Contoller<--UserDB:Provider & Requester
+deactivate UserDB
+activate Payment Contoller
+Payment Contoller->Taxing Controller:Get Tax
+deactivate Payment Contoller
+activate Taxing Controller
+Payment Contoller<--Taxing Controller:TaxAmount
+deactivate Taxing Controller
+activate Payment Contoller
+Payment Contoller->Bank:Charge Requester
+deactivate Payment Contoller
+activate Bank
+Payment Contoller<--Bank:Charge Complete
+deactivate Bank
+activate Payment Contoller
+Payment Contoller->Taxing Controller:Pay Tax
+deactivate Payment Contoller
+activate Taxing Controller
+Taxing Controller-->Payment Contoller:Payment Complete
+deactivate Taxing Controller
+activate Payment Contoller
+Payment Contoller->Bank:Pay Provider
+deactivate Payment Contoller
+activate Bank
+Payment Contoller<--Bank:Payment Complete
+deactivate Bank
+activate Payment Contoller
+Stock Broker<--Payment Contoller:Payment Complete
+deactivate Payment Contoller
+activate Stock Broker
+Stock Broker->Stock Market Controller:UpdateStock
+Stock Requester<--Stock Broker:Purchase Complete
+deactivate Stock Broker
+
+
