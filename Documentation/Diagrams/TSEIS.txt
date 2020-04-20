@@ -6,7 +6,7 @@ participant Stock Broker
 participant Stock Market Controller
 participant Taxing Controller
 participant Payment Contoller
-participant UserDB
+participant User Controller
 participant Bank
 
 ==List Stock For Sale==
@@ -35,11 +35,11 @@ activate Stock Broker
 Stock Broker->Payment Contoller:Purchase Stock
 deactivate Stock Broker
 activate Payment Contoller
-Payment Contoller->UserDB:Get Users
+Payment Contoller->User Controller:Get Users
 deactivate Payment Contoller
-activate UserDB
-Payment Contoller<--UserDB:Provider & Requester
-deactivate UserDB
+activate User Controller
+Payment Contoller<--User Controller:Provider & Requester
+deactivate User Controller
 activate Payment Contoller
 Payment Contoller->Taxing Controller:Get Tax
 deactivate Payment Contoller
