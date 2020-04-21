@@ -1,30 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { Component, OnInit, Input } from "@angular/core";
+import { Stock } from "../models/stock";
 
-@Component( {
-  selector: 'app-stock-list-item',
-  templateUrl: './stock-list-item.component.html',
-  styleUrls: [ './stock-list-item.component.scss' ]
-} )
+@Component({
+  selector: "app-stock-list-item",
+  templateUrl: "./stock-list-item.component.html",
+  styleUrls: ["./stock-list-item.component.scss"],
+})
 export class StockListItemComponent implements OnInit {
+  @Input() stock: Stock;
 
-  public stockName: string = 'Stock';
-  public stockValueChange: number = 5;
-  public icon = faArrowRight;
+  constructor() {}
 
-  public get rotation (): number {
-    if ( this.stockValueChange > 0 ) {
-      return 315;
-    }
-    else {
-      return 45;
-    }
-  }
-
-
-  constructor () { }
-
-  ngOnInit (): void {
-  }
-
+  ngOnInit(): void {}
 }

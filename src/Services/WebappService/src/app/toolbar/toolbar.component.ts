@@ -1,4 +1,3 @@
-import { faHouseUser } from '@fortawesome/free-solid-svg-icons';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -7,8 +6,6 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./toolbar.component.scss']
 })
 export class ToolbarComponent implements OnInit {
-
-  faHouseUser = faHouseUser;
 
 
   constructor() { }

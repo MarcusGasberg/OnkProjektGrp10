@@ -3,7 +3,7 @@
 div {
   display: flex;
   padding: 0;
-  background-image: url("../../assets/background.svg");
+  //background-image: url("../../assets/background.svg");
   height: calc(100% - 64px);
   justify-content: space-around;
   p {
@@ -63,7 +63,17 @@ div {
   }
 
   .owned-stocks {
-    width: 400px;
+    flex-direction: column;
+    align-self: center;
+    justify-content: flex-start;
+    max-width: 400px;
+    height: 600px;
     flex: 3;
+    background-color: $white-color !important;
+    margin-right: 130px;
+    margin-left: 80px;
+    app-stock-list-item {
+      height: 50px;
+    }
   }
 }
