@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using Microsoft.AspNetCore.Authentication;
 
 namespace IdentityServer4.Quickstart.UI
 {
@@ -29,13 +31,19 @@ namespace IdentityServer4.Quickstart.UI
             _events = events;
         }
 
+        [HttpGet]
+        public IActionResult Get()
+        {
+            return new JsonResult(from c in User.Claims select new { c.Type, c.Value });
+        }
+
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDTO model)
         {
             if (ModelState.IsValid == false)
             {
-                return BadRequest();
+                return BadRequest(ModelState);
             }
 
             var result = await _signInManager.PasswordSignInAsync(
@@ -51,12 +59,8 @@ namespace IdentityServer4.Quickstart.UI
             }
 
             var user = await _userManager.FindByNameAsync(model.Username);
-            await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName));
 
-            var userResult = new UserDTO{
-                Email = user.Email,
-                Username = user.UserName,
-            };
+            await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName));
 
             return Ok();
         }
@@ -89,6 +93,9 @@ namespace IdentityServer4.Quickstart.UI
             if(!result.Succeeded){
                 return BadRequest(result.Errors);
             }
+
+            await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim("userName", user.UserName));
+            await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim("email", user.Email));
 
             return Ok();
         }
