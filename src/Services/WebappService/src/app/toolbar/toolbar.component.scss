@@ -1,0 +1,18 @@
+@import "./../../styles.scss";
+
+.mat-toolbar {
+  background-color: $white-color;
+  margin: 0;
+  height: $toolbar-height;
+}
+.spacer {
+  flex: 1 1 auto;
+}
+.title{
+  font-weight: bold;
+}
+
+button{
+  margin-left: 40px;
+  margin-right: 40px;
+}
