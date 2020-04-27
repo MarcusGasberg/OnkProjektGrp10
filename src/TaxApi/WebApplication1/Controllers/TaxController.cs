@@ -19,9 +19,9 @@ namespace TaxApi.Controllers
         }
         [HttpPost]
         [Route("tax")]
-        public Tax CalTax(int money) {
+        public Tax CalTax(int money, string id) {
 
-            var tax = new Tax(money/100);
+            var tax = new Tax(money/100,id);
 
             return tax;
         }
