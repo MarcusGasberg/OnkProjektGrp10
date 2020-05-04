@@ -37,7 +37,7 @@ namespace Api
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
                     ClientSecrets = { new Secret("511536EF-F270-4058-80CA-1C89C192F69A".Sha256()) },
 
-                     // where to redirect to after login
+                    // where to redirect to after login
                     //RedirectUris = { "http://localhost:5002/signin-oidc" },
 
                     // where to redirect to after logout
