@@ -2,12 +2,20 @@
   <div class="left-container">
     <p class="welcome">Welcome John</p>
     <div class="spacer"></div>
-    <button class="exchange-btn">
-      <span>Buy Stocks</span>
+    <button
+      class="exchange-btn"
+      [routerLink]="['/buysell']"
+      routerLinkActive="router-link-active"
+    >
+      <span>Buy Stocks </span>
       <i class="fas fa-arrow-right"></i>
     </button>
-    <button class="exchange-btn">
-      <span>Sell Stocks</span>
+    <button
+      class="exchange-btn"
+      [routerLink]="['/buysell']"
+      routerLinkActive="router-link-active"
+    >
+      <span>Sell Stocks </span>
       <i class="fas fa-arrow-right"></i>
     </button>
   </div>

@@ -1,18 +1,19 @@
-@import "./../../styles.scss";
+@import './../../styles.scss';
 
 .mat-toolbar {
   background-color: $white-color;
   margin: 0;
   height: $toolbar-height;
+  font-family: 'Nunito', sans-serif;
 }
 .spacer {
   flex: 1 1 auto;
 }
-.title{
+.title {
   font-weight: bold;
 }
 
-button{
+button {
   margin-left: 40px;
   margin-right: 40px;
 }

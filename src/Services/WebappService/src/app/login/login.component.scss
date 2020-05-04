@@ -1,0 +1,50 @@
+@import './../../styles.scss';
+
+.container {
+  font-family: 'Nunito', sans-serif;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  .container-card {
+    background-color: $accent-color;
+    width: 500px;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    border-radius: 0px;
+    transition: none !important;
+    box-shadow: none !important;
+    margin-bottom: 150px;
+    justify-content: center;
+    color: $text-color;
+    font-weight: bold;
+    font-family: 'Nunito', sans-serif;
+    .login-alignment {
+      width: fit-content;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      mat-card-header {
+        width: 100%;
+        ::ng-deep .mat-card-header-text {
+          margin: 0px;
+          mat-card-title {
+            width: 100%;
+            font-size: 40px;
+          }
+        }
+      }
+    }
+  }
+  mat-spinner {
+  }
+
+  .mat-raised-button.mat-primary {
+    background-color: $action-color;
+  }
+}
