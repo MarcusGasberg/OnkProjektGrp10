@@ -25,13 +25,26 @@ namespace PaymentApi.Controllers
         }
 
         [HttpGet]
-        public Payment GetPayment()
+        public async Task<IActionResult> GetPayment()
         {
             //get på account i user
 
+            int money = 100;
 
+            //get tax
+            var tax = await this.tax.CalTax(100, "test");
 
-            return 
+            //call charge requester
+
+            //call pay provider
+
+            if (/*result ok*/)
+                return Ok();
+            else
+            {
+                return BadRequest();
+            }
+
         }
     }
 }
