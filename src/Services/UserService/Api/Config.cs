@@ -43,14 +43,25 @@ namespace Api
                     // where to redirect to after logout
                     //PostLogoutRedirectUris = { "http://localhost:5002/signout-callback-oidc" },
 
-                    AllowedScopes = new List<string>{ 
+                    AllowedScopes = new List<string>{
                         "user_api",
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile
                     },
 
                     AllowOfflineAccess = true
-                }
+                },
+                new Client {
+                 ClientId = "angular_spa",
+                 ClientName = "Angular SPA",
+                 AllowedGrantTypes = GrantTypes.Implicit,
+                 AllowedScopes = { "openid", "profile", "email", "user_api" },
+                 RedirectUris = {"http://localhost:4200/auth-callback"},
+                 PostLogoutRedirectUris = {"http://localhost:4200/"},
+                 AllowedCorsOrigins = {"http://localhost:4200"},
+                 AllowAccessTokensViaBrowser = true,
+                 AccessTokenLifetime = 3600
+         }
             };
     }
 }
