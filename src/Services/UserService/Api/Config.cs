@@ -1,8 +1,4 @@
-﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
-// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
-
-
-using IdentityServer4;
+﻿using IdentityServer4;
 using IdentityServer4.Models;
 using System.Collections.Generic;
 
@@ -15,53 +11,55 @@ namespace Api
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
+                new IdentityResources.Email()
             };
 
 
         public static IEnumerable<ApiResource> Apis =>
             new ApiResource[]
             {
-                new ApiResource("user_api", "Users Api")
+                new ApiResource("taxingController", "Taxing Controller"),
+                new ApiResource("paymentController", "Payment Controller"),
+                new ApiResource("stockMarketController", "Stock Market Controller")
             };
 
 
         public static IEnumerable<Client> Clients =>
             new Client[]
             {
-                // client credentials flow client
                 new Client
                 {
-                    ClientId = "client",
-                    ClientName = "Client Credentials Client",
+                    ClientId = "angularClient",
+                    ClientName = "Angular Client",
+                    ClientUri = "http://localhost:4200",
 
-                    AllowedGrantTypes = GrantTypes.ClientCredentials,
-                    ClientSecrets = { new Secret("511536EF-F270-4058-80CA-1C89C192F69A".Sha256()) },
+                    AllowedGrantTypes = GrantTypes.Implicit,
 
-                    // where to redirect to after login
-                    //RedirectUris = { "http://localhost:5002/signin-oidc" },
+                    RequireClientSecret = false,
+                    RequireConsent = false,
+                    RequirePkce = true,
 
-                    // where to redirect to after logout
-                    //PostLogoutRedirectUris = { "http://localhost:5002/signout-callback-oidc" },
-
-                    AllowedScopes = new List<string>{
-                        "user_api",
-                        IdentityServerConstants.StandardScopes.OpenId,
-                        IdentityServerConstants.StandardScopes.Profile
+                    RedirectUris =
+                    {
+                        "http://localhost:4200",
+                        "http://localhost:4200/callback",
                     },
 
-                    AllowOfflineAccess = true
-                },
-                new Client {
-                 ClientId = "angular_spa",
-                 ClientName = "Angular SPA",
-                 AllowedGrantTypes = GrantTypes.Implicit,
-                 AllowedScopes = { "openid", "profile", "email", "user_api" },
-                 RedirectUris = {"http://localhost:4200/auth-callback"},
-                 PostLogoutRedirectUris = {"http://localhost:4200/"},
-                 AllowedCorsOrigins = {"http://localhost:4200"},
-                 AllowAccessTokensViaBrowser = true,
-                 AccessTokenLifetime = 3600
-         }
+                    PostLogoutRedirectUris = { "http://localhost:4200" },
+                    AllowedCorsOrigins = { "http://localhost:4200" },
+
+                    AllowAccessTokensViaBrowser = true,
+                    AccessTokenLifetime = 3600,
+
+                    AllowedScopes = {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.Email,
+                        "taxingController",
+                        "paymentController",
+                        "stockMarketController"
+                    }
+                }
             };
     }
 }

@@ -1,8 +1,21 @@
 <mat-toolbar>
   <span class="title">Stonks.</span>
   <span class="spacer"></span>
-  <span>Some Name</span>
-  <button>
+  <span>{{ Name }}</span>
+  <button mat-icon-button>
     <i class="fas fa-house-user"></i>
   </button>
+
+  <button
+    *ngIf="!IsLoggedIn; else notLoggedIn"
+    mat-button
+    (click)="loginClick()"
+  >
+    Login
+  </button>
+  <ng-template #notLoggedIn>
+    <button mat-button (click)="logoutClick()">
+      Logout
+    </button>
+  </ng-template>
 </mat-toolbar>

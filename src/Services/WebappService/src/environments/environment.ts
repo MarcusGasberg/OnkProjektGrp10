@@ -3,7 +3,17 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  authority: 'http://localhost:5000',
+  clientId: 'angularClient',
+  redirectUri: 'http://localhost:4200',
+  responseType: 'id_token token',
+  scope:
+    'openid profile taxingController paymentController stockMarketController',
+  silentRenewUrl: 'http://localhost:4200/silent-renew.html',
+  taxingControllerUrl: '',
+  paymentControllerUrl: '',
+  stockMarketController: '',
 };
 
 /*

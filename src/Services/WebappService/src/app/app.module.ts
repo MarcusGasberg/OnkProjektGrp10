@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
 
@@ -16,7 +16,30 @@ import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { LoginComponent } from './login/login.component';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import {
+  AuthModule,
+  LogLevel,
+  OidcConfigService,
+} from 'angular-auth-oidc-client';
+import { environment } from 'src/environments/environment';
+import { AuthInterceptor } from './auth/auth-interceptor';
+
+export function configureAuth(oidcConfigService: OidcConfigService) {
+  return () =>
+    oidcConfigService.withConfig({
+      stsServer: environment.authority,
+      redirectUrl: environment.redirectUri,
+      clientId: environment.clientId,
+      responseType: environment.responseType,
+      postLogoutRedirectUri: environment.redirectUri,
+      scope: environment.scope,
+      silentRenew: true,
+      silentRenewUrl: environment.silentRenewUrl,
+      logLevel: LogLevel.Debug,
+    });
+}
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -24,7 +47,6 @@ import { LoginComponent } from './login/login.component';
     ToolbarComponent,
     StockListItemComponent,
     BuySellStockComponent,
-    LoginComponent,
   ],
   imports: [
     BrowserModule,
@@ -38,8 +60,23 @@ import { LoginComponent } from './login/login.component';
     MatCardModule,
     MatProgressSpinnerModule,
     MatButtonModule,
+    HttpClientModule,
+    AuthModule.forRoot(),
   ],
-  providers: [],
+  providers: [
+    OidcConfigService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: configureAuth,
+      deps: [OidcConfigService],
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
