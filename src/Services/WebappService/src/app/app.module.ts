@@ -21,9 +21,12 @@ import {
   AuthModule,
   LogLevel,
   OidcConfigService,
+  PublicEventsService,
+  EventTypes,
 } from 'angular-auth-oidc-client';
 import { environment } from 'src/environments/environment';
 import { AuthInterceptor } from './auth/auth-interceptor';
+import { filter } from 'rxjs/operators';
 
 export function configureAuth(oidcConfigService: OidcConfigService) {
   return () =>
@@ -33,9 +36,8 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
       clientId: environment.clientId,
       responseType: environment.responseType,
       postLogoutRedirectUri: environment.redirectUri,
+      autoUserinfo: true,
       scope: environment.scope,
-      silentRenew: true,
-      silentRenewUrl: environment.silentRenewUrl,
       logLevel: LogLevel.Debug,
     });
 }
@@ -79,4 +81,15 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private readonly eventService: PublicEventsService) {
+    this.eventService
+      .registerForEvents()
+      .pipe(
+        filter((notification) => notification.type === EventTypes.ConfigLoaded)
+      )
+      .subscribe((config) => {
+        console.log('ConfigLoaded', config);
+      });
+  }
+}

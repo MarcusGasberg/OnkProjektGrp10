@@ -1,7 +1,12 @@
 <mat-toolbar>
   <span class="title">Stonks.</span>
   <span class="spacer"></span>
-  <span>{{ Name }}</span>
+  <button mat-button (click)="testApiClick()">
+    Call Test Api
+  </button>
+  <button mat-button (click)="accountClick()">
+    {{ Name }}
+  </button>
   <button mat-icon-button>
     <i class="fas fa-house-user"></i>
   </button>

@@ -10,6 +10,8 @@ export class ToolbarComponent implements OnInit {
   @Input() Name: string;
   @Output() Login = new EventEmitter();
   @Output() Logout = new EventEmitter();
+  @Output() Account = new EventEmitter();
+  @Output() TestApi = new EventEmitter();
 
   constructor() {}
 
@@ -21,5 +23,13 @@ export class ToolbarComponent implements OnInit {
 
   logoutClick(): void {
     this.Logout.emit();
+  }
+
+  accountClick(): void {
+    this.Account.emit();
+  }
+
+  testApiClick(): void {
+    this.TestApi.emit();
   }
 }

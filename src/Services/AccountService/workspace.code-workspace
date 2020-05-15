@@ -1,11 +1,11 @@
 {
   "folders": [
-	{
-		"path": "..\\WebappService"
-	},
-	{
-		"path": "."
-	}
-],
+    {
+      "path": "..\\WebappService"
+    },
+    {
+      "path": "."
+    }
+  ],
   "settings": {}
 }

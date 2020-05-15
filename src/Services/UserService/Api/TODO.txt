@@ -1,3 +1,0 @@
-- Add identity to api instead of TestUsers
-- Add sign up?
-- Add Microservices Clients from other branches

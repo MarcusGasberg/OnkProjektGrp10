@@ -22,6 +22,7 @@ namespace AccountService
         public static IEnumerable<ApiResource> Apis =>
             new ApiResource[]
             {
+                new ApiResource("api1", "Test Api"),
                 new ApiResource("taxingController", "Taxing Controller"),
                 new ApiResource("paymentController", "Payment Controller"),
                 new ApiResource("stockMarketController", "Stock Market Controller")
@@ -40,7 +41,7 @@ namespace AccountService
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
                     ClientSecrets = { new Secret("511536EF-F270-4058-80CA-1C89C192F69A".Sha256()) },
 
-                    AllowedScopes = { "api1" }
+                    AllowedScopes = { "api1" },
                 },
                 new Client
                 {
@@ -72,7 +73,8 @@ namespace AccountService
                         IdentityServerConstants.StandardScopes.Email,
                         "taxingController",
                         "paymentController",
-                        "stockMarketController"
+                        "stockMarketController",
+                        "api1"
                     }
                 }
             };
