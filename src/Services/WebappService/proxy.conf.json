@@ -1,9 +1,9 @@
 {
-  "/user_api": {
+  "/account_api": {
     "target": "http://localhost:5000",
     "secure": false,
     "pathRewrite": {
-      "^/user_api": ""
+      "^/account_api": ""
     }
   }
 }
