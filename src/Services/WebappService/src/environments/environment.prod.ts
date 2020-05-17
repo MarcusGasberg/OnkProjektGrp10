@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  authority: '/account_api',
+  authority: 'http://localhost:5000',
   clientId: 'angularClient',
   redirectUri: 'http://localhost:4200',
   responseType: 'id_token token',
