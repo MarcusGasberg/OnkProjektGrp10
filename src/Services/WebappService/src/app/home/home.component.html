@@ -1,0 +1,33 @@
+<div>
+  <div class="left-container">
+    <p class="welcome">Welcome John</p>
+    <div class="spacer"></div>
+    <button
+      class="exchange-btn"
+      [routerLink]="['/buysell']"
+      routerLinkActive="router-link-active"
+    >
+      <span>Buy Stocks </span>
+      <i class="fas fa-arrow-right"></i>
+    </button>
+    <button
+      class="exchange-btn"
+      [routerLink]="['/buysell']"
+      routerLinkActive="router-link-active"
+    >
+      <span>Sell Stocks </span>
+      <i class="fas fa-arrow-right"></i>
+    </button>
+  </div>
+  <div class="stock-market-container">
+    <button class="stock-market-btn">
+      Stock Market <i class="fas fa-arrow-right"></i>
+    </button>
+  </div>
+  <div class="owned-stocks">
+    <app-stock-list-item
+      *ngFor="let stock of stocks"
+      [stock]="stock"
+    ></app-stock-list-item>
+  </div>
+</div>

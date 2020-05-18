@@ -1,0 +1,57 @@
+<div>
+  <div class="left-container">
+    <p class="stocks-title">Your stocks</p>
+    <cdk-virtual-scroll-viewport itemSize="50" class="stock-container">
+      <app-stock-list-item
+        class="list-item"
+        *cdkVirtualFor="let stock of stocks"
+        [stock]="stock"
+      ></app-stock-list-item>
+    </cdk-virtual-scroll-viewport>
+  </div>
+  <div class="trade-window">
+    <div class="trade-window-left">
+      <p class="selected-stock">{{ selectedStock.name }}</p>
+      <form action="" *ngIf="!isBuying === isSelling">
+        <mat-form-field class="example-full-width" floatLabel="never">
+          <input
+            #NumSotcks
+            matInput
+            placeholder="How Many?"
+            [formControl]="numberFormControl"
+            autocomplete="off"
+          />
+          <mat-error
+            *ngIf="
+              numberFormControl.hasError('pattern') &&
+              !numberFormControl.hasError('required')
+            "
+          >
+            Please enter a number
+          </mat-error>
+        </mat-form-field>
+        <p>Total: {{ NumSotcks.value * selectedStock.value }}$</p>
+      </form>
+      <button class="exchange-btn" *ngIf="isBuying === true">
+        <span>Buy Stocks</span>
+      </button>
+      <button class="exchange-btn" *ngIf="isSelling === true">
+        <span>Sell Stocks</span>
+      </button>
+    </div>
+    <div class="trade-window-right">
+      <div>
+        <span>Purchase price</span>
+        <span></span>
+      </div>
+      <div>
+        <span>Sell price</span>
+        <span></span>
+      </div>
+      <div>
+        <span>Stocks Owned</span>
+        <span></span>
+      </div>
+    </div>
+  </div>
+</div>
