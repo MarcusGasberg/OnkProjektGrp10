@@ -1,18 +1,17 @@
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using StockMarketService.Models;
 
 public class Stock
 {
     [Key]
-    public string name { get; set; }
-    double currentPrice { get; set; }
+    public string Name { get; set; }
+    public List<StockPrice> HistoricPrice { get; set; }
 
-    StockPrice[] historicPrice { get; set; }
-
-    public class StockPrice
-    {
-        public decimal price { get; set; }
-        public DateTime updateTime { get; set; }
-    }
+    public int AmountForSale { get; set; }
+    
+    
 }
