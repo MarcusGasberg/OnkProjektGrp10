@@ -1,10 +1,11 @@
 {
-  "/api": {
-    "target": "http://localhost:5001",
+  "/account-service": {
+    "target": "http://localhost:5000",
     "secure": false,
     "pathRewrite": {
-      "^/api": ""
+      "^/account-service": ""
     },
+    "changeOrigin": true,
     "logLevel": "debug"
   }
 }

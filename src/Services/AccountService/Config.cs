@@ -45,8 +45,8 @@ namespace AccountService
                 },
                 new Client
                 {
-                    ClientId = "angularClient",
-                    ClientName = "Angular Client",
+                    ClientId = "angularDebugClient",
+                    ClientName = "Angular Debug Client",
                     ClientUri = "http://localhost:4200",
 
                     AllowedGrantTypes = GrantTypes.Implicit,
@@ -63,6 +63,74 @@ namespace AccountService
 
                     PostLogoutRedirectUris = { "http://localhost:4200" },
                     AllowedCorsOrigins = { "http://localhost:4200" },
+
+                    AllowAccessTokensViaBrowser = true,
+                    AccessTokenLifetime = 3600,
+
+                    AllowedScopes = {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.Email,
+                        "taxingController",
+                        "paymentController",
+                        "stockMarketController",
+                        "api1"
+                    }
+                },
+                new Client
+                {
+                    ClientId = "angularDockerClient",
+                    ClientName = "Angular Docker Client",
+                    ClientUri = "http://192.168.99.100:4200/",
+
+                    AllowedGrantTypes = GrantTypes.Implicit,
+
+                    RequireClientSecret = false,
+                    RequireConsent = false,
+                    RequirePkce = true,
+
+                    RedirectUris =
+                    {
+                        "http://192.168.99.100:4200",
+                        "http://192.168.99.100:4200/callback",
+                    },
+
+                    PostLogoutRedirectUris = { "http://192.168.99.100:4200" },
+                    AllowedCorsOrigins = { "http://192.168.99.100:4200", },
+
+                    AllowAccessTokensViaBrowser = true,
+                    AccessTokenLifetime = 3600,
+
+                    AllowedScopes = {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.Email,
+                        "taxingController",
+                        "paymentController",
+                        "stockMarketController",
+                        "api1"
+                    }
+                },
+                new Client
+                {
+                    ClientId = "angularClient",
+                    ClientName = "Angular Client",
+                    ClientUri = "http://web-app-service:4200",
+
+                    AllowedGrantTypes = GrantTypes.Implicit,
+
+                    RequireClientSecret = false,
+                    RequireConsent = false,
+                    RequirePkce = true,
+
+                    RedirectUris =
+                    {
+                        "http://web-app-service:4200",
+                        "http://web-app-service:4200/callback",
+                    },
+
+                    PostLogoutRedirectUris = { "http://web-app-service:4200" },
+                    AllowedCorsOrigins = { "http://web-app-service:4200" },
 
                     AllowAccessTokensViaBrowser = true,
                     AccessTokenLifetime = 3600,

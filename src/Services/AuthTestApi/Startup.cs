@@ -27,12 +27,14 @@ namespace AuthTestApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            var clientOrigins = new List<string>();
+            Configuration.GetSection("ClientUrls").Bind(clientOrigins);
 
             services.AddCors(options =>
             {
                 options.AddPolicy("SpaOrigin", policy =>
                 {
-                    policy.WithOrigins("http://localhost:4200");
+                    policy.WithOrigins(clientOrigins.ToArray());
                     policy.AllowAnyHeader();
                     policy.AllowAnyMethod();
                 });
@@ -42,12 +44,12 @@ namespace AuthTestApi
             .AddIdentityServerAuthentication(options =>
             {
                 // base-address of your identityserver
-                options.Authority = "http://localhost:5000";
+                options.Authority = Configuration["Authority"];
                 options.RequireHttpsMetadata = false;
 
                 // name of the API resource
-                options.ApiName = "api1";
-                options.ApiSecret = "511536EF-F270-4058-80CA-1C89C192F69A";
+                options.ApiName = Configuration["ApiName"];
+                options.ApiSecret = Configuration["ApiSecret"];
             });
         }
 

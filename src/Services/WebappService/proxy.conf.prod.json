@@ -1,9 +1,0 @@
-{
-  "/api": {
-    "target": "TODO: UPDATE THE PRODUCTION IP",
-    "secure": false,
-    "pathRewrite": {
-      "^/api": ""
-    }
-  }
-}

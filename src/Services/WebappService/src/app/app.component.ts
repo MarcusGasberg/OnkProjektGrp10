@@ -3,6 +3,7 @@ import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { Observable } from 'rxjs';
 import { tap, map, filter } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -43,7 +44,7 @@ export class AppComponent implements OnInit {
 
   testApi() {
     this.httpClient
-      .get('https://localhost:5001/weatherforecast')
+      .get(`${environment.testApiUrl}/weatherforecast`)
       .subscribe((wf) => console.log(wf));
   }
 }

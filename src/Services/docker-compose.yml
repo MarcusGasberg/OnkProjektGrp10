@@ -1,0 +1,53 @@
+version: "3"
+services:
+  web-app-service:
+    container_name: "web-app-service"
+    build: ./WebAppService
+    ports:
+      - "4200:80"
+    depends_on:
+      - account-service
+    networks:
+      - app-network
+
+  account-service:
+    container_name: "account-service"
+    build: ./AccountService
+    restart: on-failure
+    ports:
+      - "5000:80"
+    depends_on:
+      - user-db
+    networks:
+      - app-network
+
+  test-service:
+    container_name: "test-service"
+    build: ./AuthTestApi
+    restart: on-failure
+    ports:
+      - "5001:80"
+    networks:
+      - app-network
+
+  user-db:
+    image: "mcr.microsoft.com/mssql/server:2017-CU19-ubuntu-16.04"
+    container_name: "user-db"
+    restart: on-failure
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Passw0rd
+      - SA_PASSWORD=Passw0rd
+    volumes:
+      - user-db-data:/var/opt/mssql/
+      - /var/opt/mssql/data
+    networks:
+      - app-network
+
+volumes:
+  user-db-data:
+
+networks:
+  app-network:

@@ -4,15 +4,16 @@
 
 export const environment = {
   production: false,
-  authority: 'http://localhost:5000',
+  authority: `${window.location.origin}/account-service`,
   clientId: 'angularClient',
-  redirectUri: 'http://localhost:4200',
+  redirectUri: window.location.origin,
   responseType: 'id_token token',
   scope:
     'openid profile taxingController paymentController stockMarketController api1',
   taxingControllerUrl: '',
   paymentControllerUrl: '',
   stockMarketController: '',
+  testApiUrl: 'http://localhost:5001',
 };
 
 /*

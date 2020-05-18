@@ -18,9 +18,10 @@ export class AuthInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     const token = this.oidcSecurityService.getToken();
-    const headers = new HttpHeaders({
-      Authorization: 'Bearer ' + token,
-    });
+    const headers = req.headers
+      .set('Authorization', `Bearer ${token}`)
+      .set('Content-Type', 'application/json');
+
     const authReq = req.clone({ headers });
     return next.handle(authReq);
   }
