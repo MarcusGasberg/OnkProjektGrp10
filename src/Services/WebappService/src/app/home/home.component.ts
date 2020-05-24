@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Stock } from '../models/stock';
+import { StockService } from '../stock.service';
 
 @Component({
   templateUrl: './home.component.html',
@@ -15,7 +16,7 @@ export class HomeComponent implements OnInit {
     { change: -2.6, name: 'Stock Six' } as Stock,
   ];
 
-  constructor() {}
+  constructor(public stockService: StockService) {}
 
   ngOnInit(): void {}
 }

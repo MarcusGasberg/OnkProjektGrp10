@@ -17,7 +17,7 @@ namespace StockMarketService
             Console.WriteLine(JsonSerializer.Serialize(stock));
             db.Stocks.Add(stock);
             db.SaveChanges();
-            var updateTask = new Thread(async () => await manager.UpdateAllClients(JsonSerializer.Serialize(GetStocks())));
+            var updateTask = new Thread(async () => await manager.UpdateAllClients(GetStocks()));
             updateTask.Start();
         }
 
@@ -26,7 +26,7 @@ namespace StockMarketService
             var stock = db.Stocks.Find(stockName);
             stock.HistoricPrice.Add(new StockPrice(newStockPrice, DateTime.Now));
             db.Stocks.Update(stock);
-            var updateTask = new Thread(async () => await manager.UpdateAllClients(JsonSerializer.Serialize(GetStocks())));
+            var updateTask = new Thread(async () => await manager.UpdateAllClients(GetStocks()));
             updateTask.Start();
         }
 
@@ -45,9 +45,9 @@ namespace StockMarketService
             Console.WriteLine(JsonSerializer.Serialize(stock));
             db.Stocks.Update(stock);
             db.SaveChanges();
-            var updateTask = new Thread(async () => await manager.UpdateAllClients(JsonSerializer.Serialize(GetStocks())));
+            var updateTask = new Thread(async () => await manager.UpdateAllClients(GetStocks()));
             updateTask.Start();
         }
-        
+
     }
 }
