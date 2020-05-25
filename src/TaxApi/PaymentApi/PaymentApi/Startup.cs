@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -26,6 +27,30 @@ namespace PaymentApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            var clientOrigins = new List<string>();
+            Configuration.GetSection("ClientUrls").Bind(clientOrigins);
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("SpaOrigin", policy =>
+                {
+                    policy.WithOrigins(clientOrigins.ToArray());
+                    policy.AllowAnyHeader();
+                    policy.AllowAnyMethod();
+                });
+            });
+
+            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+                .AddIdentityServerAuthentication(options =>
+                {
+                    // base-address of your identityserver
+                    options.Authority = Configuration["Authority"];
+                    options.RequireHttpsMetadata = false;
+
+                    // name of the API resource
+                    options.ApiName = Configuration["ApiName"];
+                    options.ApiSecret = Configuration["ApiSecret"];
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -40,7 +65,11 @@ namespace PaymentApi
 
             app.UseRouting();
 
+            app.UseAuthentication();
+
             app.UseAuthorization();
+
+            app.UseCors("SpaOrigin");
 
             app.UseEndpoints(endpoints =>
             {

@@ -7,34 +7,13 @@ namespace TaxApi
 {
     public class Tax
     {
-        private int _amount;
-        private string _id;
+        public int Amount { set; get; }
+        public string Id { set; get; }
 
         public Tax(int amount, string id)
         {
-            _amount = amount;
-            _id = id;
-        }
-
-        public int getAmount()
-        {
-            return _amount;
-        }
-
-        public void setAmount(int amount)
-        {
-            _amount = amount;
-        }
-
-        public string getId()
-        {
-            return _id;
-        }
-
-        public void setId(string id)
-        {
-            _id = id;
-            
+            Amount = amount;
+            Id = id;
         }
 
     }

@@ -19,9 +19,9 @@ namespace TaxApi.Controllers
         }
         [HttpPost]
         [Route("tax")]
-        public async Task<Tax> CalTax(int money, string id) {
+        public async Task<Tax> CalTax(Tax requestTax) {
 
-            var tax =  new Tax(money / 100, id);
+            var tax =  new Tax(requestTax.Amount / 100, requestTax.Id);
 
            return tax;
         }
