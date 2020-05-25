@@ -1,0 +1,139 @@
+@import "./../../styles.scss";
+
+div {
+  display: flex;
+  padding: 0;
+  //background-image: url("../../assets/background.svg");
+  background-color: cyan;
+  height: calc(100% - 64px);
+  justify-content: space-around;
+  p {
+    margin: 0;
+  }
+
+  div {
+    flex-direction: column;
+  }
+
+  button {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: $action-color;
+    border: none;
+    padding: 10px;
+  }
+
+  .left-container {
+    justify-content: flex-start;
+    flex: 1;
+    margin-left: 130px;
+    .stocks-title {
+      margin-top: 50px;
+      color: $text-color;
+      font-weight: bold;
+      font-size: 35px;
+    }
+
+    .stock-container {
+      justify-content: center;
+      height: 750px;
+      width: auto;
+
+      app-stock-list-item {
+        height: 50px;
+        background-color: $white-color;
+      }
+    }
+
+    .spacer {
+      height: 130px;
+    }
+  }
+
+  .trade-window {
+    flex-direction: row;
+    align-self: center;
+    justify-content: space-evenly;
+    height: 450px;
+    flex: 3;
+    background-color: $white-color !important;
+    margin-right: 130px;
+    margin-left: 80px;
+    .selected-stock {
+      font-size: 45px;
+      font-weight: bold;
+      color: $text-color;
+      width: 300px;
+    }
+
+    div {
+      background-color: $white-color;
+    }
+
+    .trade-window-left {
+      flex: 1;
+      color: $text-color;
+      align-items: center;
+      margin-left: 60px;
+      form {
+        align-items: center;
+        width: 300px;
+
+        ::ng-deep .mat-form-field {
+          .mat-input-element {
+            color: $text-color;
+          }
+          .mat-form-field-label {
+            color: $text-color;
+            font-size: 30px;
+            font-family: "Nunito";
+            text-align: center;
+          }
+          .mat-form-field-underline {
+            background-color: $white-color;
+          }
+          .mat-form-field-ripple {
+            background-color: $white-color;
+          }
+          .mat-form-field-required-marker {
+            color: pink;
+          }
+          .mat-error {
+            color: pink;
+          }
+        }
+
+        mat-form-field {
+          width: 100%;
+          input {
+            width: 100%;
+            height: 60px;
+            font-family: "Nunito";
+            font-size: 35px;
+            text-align: center;
+          }
+        }
+
+        p {
+          font-size: 35px;
+          text-align: center;
+        }
+      }
+      .exchange-btn {
+        width: 200px;
+        border-radius: 10px;
+        font-size: 30px;
+        font-family: "Nunito";
+        color: $white-color;
+      }
+    }
+    .trade-window-right {
+      margin-right: 60px;
+      flex: 2;
+      align-items: flex-end;
+      color: $text-color;
+      font-size: 35px;
+    }
+  }
+}

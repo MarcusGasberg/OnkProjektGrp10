@@ -1,0 +1,9 @@
+<app-toolbar
+  [IsLoggedIn]="isLoggedIn$ | async"
+  [Name]="name$ | async"
+  (Login)="login()"
+  (Logout)="logout()"
+  (Account)="account()"
+  (TestApi)="testApi()"
+></app-toolbar>
+<router-outlet> </router-outlet>

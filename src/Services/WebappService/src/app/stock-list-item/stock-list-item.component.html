@@ -1,0 +1,13 @@
+<div class="container">
+  <span>{{ stock.name }} </span>
+  <span class="change"
+    >{{ stock.change }}%
+    <i
+      class="fas fa-arrow-right"
+      [ngClass]="{
+        positive: stock.change > 0,
+        negative: stock.change < 0
+      }"
+    ></i
+  ></span>
+</div>
