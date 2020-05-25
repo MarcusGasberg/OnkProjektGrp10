@@ -16,6 +16,7 @@ namespace PaymentApi.Controllers
     public class PaymentController : ControllerBase
     {
         private TaxController tax;
+        private HttpClient _client = new HttpClient();
 
         private readonly ILogger<PaymentController> _logger;
 
@@ -24,26 +25,35 @@ namespace PaymentApi.Controllers
             _logger = logger;
         }
 
+        //TODO might want to change this to target specific ports in Kubenetes  
+
         [HttpGet]
         public async Task<IActionResult> GetPayment()
         {
             //get på account i user
+            var userResponse = await _client.GetAsync("useraccount");
 
-            int money = 100;
+            userResponse.EnsureSuccessStatusCode();
 
             //get tax
-            var tax = await this.tax.CalTax(100, "test");
+
+            var taxResponse = await _client.PostAsync("controller/tax", userResponse.Content);
+
+            taxResponse.EnsureSuccessStatusCode();
 
             //call charge requester
 
+            var chargeResponse = await _client.PostAsync("payprovider", taxResponse.Content);
+
+            chargeResponse.EnsureSuccessStatusCode();
+
             //call pay provider
 
-            if (/*result ok*/)
-                return Ok();
-            else
-            {
-                return BadRequest();
-            }
+            var payResponse = await _client.PutAsync("payment", chargeResponse.Content);
+
+            payResponse.EnsureSuccessStatusCode();
+
+            return Ok();
 
         }
     }
