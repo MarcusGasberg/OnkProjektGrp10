@@ -17,6 +17,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
 import {
   AuthModule,
   LogLevel,
@@ -27,6 +28,8 @@ import {
 import { environment } from 'src/environments/environment';
 import { AuthInterceptor } from './auth/auth-interceptor';
 import { filter } from 'rxjs/operators';
+import { AccountComponent } from './account/account.component';
+import { BankAccountComponent } from './bank-account/bank-account.component';
 
 export function configureAuth(oidcConfigService: OidcConfigService) {
   return () =>
@@ -49,9 +52,12 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
     ToolbarComponent,
     StockListItemComponent,
     BuySellStockComponent,
+    AccountComponent,
+    BankAccountComponent,
   ],
   imports: [
     BrowserModule,
+    CommonModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     MatToolbarModule,

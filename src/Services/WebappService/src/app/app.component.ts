@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 import { tap, map, filter } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { AccountService } from './account/account.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -16,33 +18,30 @@ export class AppComponent implements OnInit {
   name$: Observable<string>;
 
   constructor(
-    public oidcSecurityService: OidcSecurityService,
-    public httpClient: HttpClient
+    public httpClient: HttpClient,
+    public accountService: AccountService,
+    public router: Router
   ) {}
 
   ngOnInit() {
-    this.oidcSecurityService
-      .checkAuth()
-      .subscribe((auth) => console.log('App is authenticated', auth));
-
-    this.isLoggedIn$ = this.oidcSecurityService.isAuthenticated$;
-    this.name$ = this.oidcSecurityService.userData$.pipe(
-      filter((userdata) => userdata != null),
-      map((userdata) => userdata.name)
-    );
+    this.accountService.checkAuth().subscribe();
+    this.isLoggedIn$ = this.accountService.IsLoggedIn$;
+    this.name$ = this.accountService.Name$;
   }
 
   login(): void {
-    this.oidcSecurityService.authorize();
+    this.accountService.login();
   }
 
   logout(): void {
-    this.oidcSecurityService.logoff();
+    this.accountService.logout();
   }
 
-  account(): void {}
+  account(): void {
+    this.router.navigate(['account']);
+  }
 
-  testApi() {
+  testApi(): void {
     this.httpClient
       .post(`${environment.testApiUrl}/customer`, {})
       .subscribe((wf) => console.log(wf));

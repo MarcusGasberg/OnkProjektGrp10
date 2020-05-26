@@ -13,6 +13,7 @@ export const environment = {
   taxingControllerUrl: '',
   paymentControllerUrl: '',
   stockMarketController: '',
+  bankUrl: 'http://localhost:5004',
   testApiUrl: 'http://localhost:5004',
 };
 
