@@ -25,7 +25,8 @@ namespace AccountService
                 new ApiResource("api1", "Test Api"),
                 new ApiResource("taxingController", "Taxing Controller"),
                 new ApiResource("paymentController", "Payment Controller"),
-                new ApiResource("stockMarketController", "Stock Market Controller")
+                new ApiResource("stockMarketController", "Stock Market Controller"),
+                new ApiResource("bankController", "Stock Market Controller")
             };
 
 
@@ -41,7 +42,7 @@ namespace AccountService
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
                     ClientSecrets = { new Secret("511536EF-F270-4058-80CA-1C89C192F69A".Sha256()) },
 
-                    AllowedScopes = { "api1", "taxingController", "paymentController", "stockMarketController" },
+                    AllowedScopes = { "api1", "taxingController", "paymentController", "stockMarketController", "bankController" },
                 },
                 new Client
                 {
@@ -74,6 +75,7 @@ namespace AccountService
                         "taxingController",
                         "paymentController",
                         "stockMarketController",
+                        "bankController",
                         "api1"
                     }
                 },
@@ -108,6 +110,7 @@ namespace AccountService
                         "taxingController",
                         "paymentController",
                         "stockMarketController",
+                        "bankController",
                         "api1"
                     }
                 },
@@ -142,6 +145,7 @@ namespace AccountService
                         "taxingController",
                         "paymentController",
                         "stockMarketController",
+                        "bankController",
                         "api1"
                     }
                 }
