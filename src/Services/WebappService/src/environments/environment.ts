@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   authority: `${window.location.origin}/account-service`,
-  clientId: 'angularClient',
+  clientId: 'angularDebugClient',
   redirectUri: window.location.origin,
   responseType: 'id_token token',
   scope:
@@ -13,7 +13,7 @@ export const environment = {
   taxingControllerUrl: '',
   paymentControllerUrl: '',
   stockMarketController: '',
-  testApiUrl: 'http://localhost:5001',
+  testApiUrl: 'http://localhost:5004',
 };
 
 /*

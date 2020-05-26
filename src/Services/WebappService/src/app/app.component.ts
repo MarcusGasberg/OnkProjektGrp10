@@ -44,7 +44,7 @@ export class AppComponent implements OnInit {
 
   testApi() {
     this.httpClient
-      .get(`${environment.testApiUrl}/weatherforecast`)
+      .post(`${environment.testApiUrl}/customer`, {})
       .subscribe((wf) => console.log(wf));
   }
 }
