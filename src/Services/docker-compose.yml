@@ -15,7 +15,7 @@ services:
     build: ./AccountService
     restart: on-failure
     ports:
-      - "5000:80"
+      - "5000:5000"
     depends_on:
       - user-db
     networks:
@@ -26,7 +26,7 @@ services:
     build: ./AuthTestApi
     restart: on-failure
     ports:
-      - "5001:80"
+      - "5001:5001"
     networks:
       - app-network
 
