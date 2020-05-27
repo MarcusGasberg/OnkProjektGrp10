@@ -15,6 +15,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -32,6 +33,7 @@ import { filter } from 'rxjs/operators';
 import { AccountComponent } from './account/account.component';
 import { BankAccountComponent } from './bank-account/bank-account.component';
 import { BankRegisterComponent } from './bank-register/bank-register.component';
+import { AddCreditsComponent } from './add-credits/add-credits.component';
 
 export function configureAuth(oidcConfigService: OidcConfigService) {
   return () =>
@@ -57,6 +59,7 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
     AccountComponent,
     BankAccountComponent,
     BankRegisterComponent,
+    AddCreditsComponent,
   ],
   imports: [
     BrowserModule,
@@ -72,6 +75,7 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
     MatProgressSpinnerModule,
     MatButtonModule,
     MatDialogModule,
+    MatProgressBarModule,
     HttpClientModule,
     AuthModule.forRoot(),
   ],

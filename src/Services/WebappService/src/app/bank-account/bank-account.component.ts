@@ -1,5 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { BankAccount } from '../models/account';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-bank-account',
@@ -7,8 +8,38 @@ import { BankAccount } from '../models/account';
   styleUrls: ['./bank-account.component.scss'],
 })
 export class BankAccountComponent implements OnInit {
-  constructor() {}
-  @Input() Account: BankAccount;
+  form: FormGroup;
+  editing = false;
 
-  ngOnInit(): void {}
+  constructor(private fb: FormBuilder) {}
+  @Input() Account: BankAccount;
+  @Output() AddCredits = new EventEmitter();
+  @Output() Save = new EventEmitter();
+
+  ngOnInit(): void {
+    this.form = this.fb.group({
+      registrationNumber: [
+        this.Account.registrationNumber,
+        Validators.required,
+      ],
+    });
+    this.form.disable();
+  }
+
+  edit(): void {
+    this.editing = !this.editing;
+    if (this.editing) {
+      this.form.enable();
+    } else {
+      this.form.disable();
+    }
+  }
+
+  save(): void {
+    this.Save.emit(this.form.value as BankAccount);
+  }
+
+  addCredits(): void {
+    this.AddCredits.emit();
+  }
 }
