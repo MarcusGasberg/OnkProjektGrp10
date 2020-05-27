@@ -13,6 +13,7 @@ import { BuySellStockComponent } from './buy-sell-stock/buy-sell-stock.component
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -30,6 +31,7 @@ import { AuthInterceptor } from './auth/auth-interceptor';
 import { filter } from 'rxjs/operators';
 import { AccountComponent } from './account/account.component';
 import { BankAccountComponent } from './bank-account/bank-account.component';
+import { BankRegisterComponent } from './bank-register/bank-register.component';
 
 export function configureAuth(oidcConfigService: OidcConfigService) {
   return () =>
@@ -54,6 +56,7 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
     BuySellStockComponent,
     AccountComponent,
     BankAccountComponent,
+    BankRegisterComponent,
   ],
   imports: [
     BrowserModule,
@@ -68,6 +71,7 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
     MatCardModule,
     MatProgressSpinnerModule,
     MatButtonModule,
+    MatDialogModule,
     HttpClientModule,
     AuthModule.forRoot(),
   ],

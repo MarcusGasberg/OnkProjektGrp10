@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
-import { filter, map } from 'rxjs/operators';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { filter, map, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { BankAccount } from '../models/account';
 
@@ -10,6 +10,8 @@ import { BankAccount } from '../models/account';
   providedIn: 'root',
 })
 export class AccountService {
+  bankAccount$: Subject<BankAccount> = new Subject();
+
   constructor(
     private httpClient: HttpClient,
     private oidcSecurityService: OidcSecurityService
@@ -26,8 +28,12 @@ export class AccountService {
     return this.oidcSecurityService.isAuthenticated$;
   }
 
-  get BankAccount$(): Observable<BankAccount> {
-    return this.httpClient.get<BankAccount>(`${environment.bankUrl}/customer`);
+  getBankAccount$(): Observable<BankAccount> {
+    return this.bankAccount$;
+  }
+
+  setBankAccount(account: BankAccount): void {
+    this.bankAccount$.next(account);
   }
 
   checkAuth() {
@@ -40,5 +46,18 @@ export class AccountService {
 
   logout(): void {
     this.oidcSecurityService.logoff();
+  }
+
+  registerBank(account: BankAccount) {
+    return this.httpClient.post<BankAccount>(
+      `${environment.bankUrl}/customer`,
+      account
+    );
+  }
+
+  fetchBankAccount() {
+    return this.httpClient
+      .get<BankAccount>(`${environment.bankUrl}/customer`)
+      .pipe(tap((ba) => this.bankAccount$.next(ba)));
   }
 }
