@@ -5,6 +5,9 @@ namespace BankService.Data
 {
     public class BankDbContext : DbContext
     {
+        public BankDbContext(DbContextOptions<BankDbContext> options) : base(options)
+        {
+        }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Payment> Payments { get; set; }
 

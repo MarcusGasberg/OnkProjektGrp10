@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using IdentityServer4.AccessTokenValidation;
+using BankService.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace BankService
 {
@@ -40,6 +42,11 @@ namespace BankService
                     policy.AllowAnyMethod();
                 });
             });
+
+            var connectionString = Configuration.GetConnectionString("DefaultConnection");
+
+            services.AddDbContext<BankDbContext>(options =>
+                options.UseSqlServer(connectionString));
 
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
             .AddIdentityServerAuthentication(options =>

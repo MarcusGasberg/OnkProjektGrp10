@@ -21,12 +21,13 @@ namespace BankService.Controllers
     [Authorize]
     public class PaymentController : ControllerBase
     {
-        private readonly ILogger<PaymentController> _logger;
+        private readonly ILogger<PaymentController> logger;
         private BankDbContext dbContext;
 
-        public PaymentController(ILogger<PaymentController> logger)
+        public PaymentController(ILogger<PaymentController> logger, BankDbContext dbContext)
         {
-            _logger = logger;
+            this.logger = logger;
+            this.dbContext = dbContext;
         }
 
         [HttpGet]
@@ -38,45 +39,42 @@ namespace BankService.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(PaymentDto payment)
         {
-            using (dbContext = new BankDbContext())
+            Customer sender = await dbContext.Customers.FindAsync(payment.SenderId);
+            Customer receiver = await dbContext.Customers.FindAsync(payment.ReceiverId);
+            if (sender == null)
             {
-                Customer sender = await dbContext.Customers.FindAsync(payment.SenderId);
-                Customer receiver = await dbContext.Customers.FindAsync(payment.ReceiverId);
-                if (sender == null)
-                {
-                    return BadRequest("Sender isn't registered");
-                }
-                if (receiver == null)
-                {
-                    return BadRequest("Receiver isn't registered");
-                }
-
-                if (sender.Balance < payment.Amount)
-                {
-                    return BadRequest("Insufficient funds");
-                }
-
-                var dbPayment = new Payment()
-                {
-                    Sender = sender,
-                    Receiver = receiver,
-                    Amount = payment.Amount
-                };
-
-                dbPayment = (await dbContext.AddAsync(dbPayment)).Entity;
-
-                dbContext.AttachRange(new[] { sender, receiver });
-
-                sender.Balance -= payment.Amount;
-                receiver.Balance += payment.Amount;
-
-                sender.SendPayments.Add(dbPayment);
-                receiver.ReceivedPayments.Add(dbPayment);
-
-                await dbContext.SaveChangesAsync();
-
-                return Created($"payment/{dbPayment.Id}", dbPayment);
+                return BadRequest("Sender isn't registered");
             }
+            if (receiver == null)
+            {
+                return BadRequest("Receiver isn't registered");
+            }
+
+            if (sender.Balance < payment.Amount)
+            {
+                return BadRequest("Insufficient funds");
+            }
+
+            var dbPayment = new Payment()
+            {
+                Sender = sender,
+                Receiver = receiver,
+                Amount = payment.Amount
+            };
+
+            dbPayment = (await dbContext.AddAsync(dbPayment)).Entity;
+
+            dbContext.AttachRange(new[] { sender, receiver });
+
+            sender.Balance -= payment.Amount;
+            receiver.Balance += payment.Amount;
+
+            sender.SendPayments.Add(dbPayment);
+            receiver.ReceivedPayments.Add(dbPayment);
+
+            await dbContext.SaveChangesAsync();
+
+            return Created($"payment/{dbPayment.Id}", dbPayment);
         }
     }
 }

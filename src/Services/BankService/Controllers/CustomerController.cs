@@ -21,50 +21,51 @@ namespace BankService.Controllers
     [Authorize]
     public class CustomerController : ControllerBase
     {
-        private readonly ILogger<CustomerController> _logger;
+        private readonly ILogger<CustomerController> logger;
         private BankDbContext dbContext;
 
-        public CustomerController(ILogger<CustomerController> logger)
+        public CustomerController(ILogger<CustomerController> logger, BankDbContext dbContext)
         {
-            _logger = logger;
+            this.logger = logger;
+            this.dbContext = dbContext;
         }
 
         [HttpGet("/{id}")]
         public async Task<ActionResult<Customer>> Get(string id)
         {
-            using (dbContext = new BankDbContext())
+
+            var customer = await dbContext.Customers.FindAsync(id);
+
+            if (customer == null)
             {
-                var customer = await dbContext.Customers.FindAsync(id);
-
-                if (customer == null)
-                {
-                    return NotFound(id);
-                }
-
-                return Ok(customer);
+                return NotFound(id);
             }
+
+            return Ok(customer);
         }
 
         [HttpPost]
         public async Task<IActionResult> Post(CustomerDto customer)
         {
-            using (dbContext = new BankDbContext())
+            // If the caller doesnt provide id we try getting it from claims
+            var id = customer.Id ?? User.Claims.FirstOrDefault(c => c.Type.Equals(JwtClaimTypes.Subject))?.Value;
+
+            if (id == null)
             {
-                // If id not provided we try getting it from the user
-                var id = customer.Id ?? User.Claims.FirstOrDefault(c => c.GetType().Equals(JwtClaimTypes.Subject))?.Value;
-
-                var dbCustomer = new Customer
-                {
-                    Id = id,
-                    RegistrationNumber = customer.RegistrationNumber
-                };
-
-                dbCustomer = (await dbContext.AddAsync(dbCustomer)).Entity;
-
-                await dbContext.SaveChangesAsync();
-
-                return Created($"customer/{dbCustomer.Id}", dbCustomer);
+                return BadRequest("No Id provided");
             }
+
+            var dbCustomer = new Customer
+            {
+                Id = id,
+                RegistrationNumber = customer.RegistrationNumber
+            };
+
+            dbCustomer = (await dbContext.AddAsync(dbCustomer)).Entity;
+
+            await dbContext.SaveChangesAsync();
+
+            return Created($"customer/{dbCustomer.Id}", dbCustomer);
         }
     }
 }
