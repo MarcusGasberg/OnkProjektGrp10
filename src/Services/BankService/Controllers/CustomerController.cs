@@ -30,9 +30,11 @@ namespace BankService.Controllers
             this.dbContext = dbContext;
         }
 
-        [HttpGet("/{id}")]
+        [HttpGet("{id?}")]
         public async Task<ActionResult<Customer>> Get(string id)
         {
+            // If the caller doesnt provide id we try getting it from claims
+            id ??= User.Claims.FirstOrDefault(c => c.Type.Equals(JwtClaimTypes.Subject))?.Value;
 
             var customer = await dbContext.Customers.FindAsync(id);
 
@@ -44,21 +46,56 @@ namespace BankService.Controllers
             return Ok(customer);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Post(CustomerDto customer)
+        [HttpPut]
+        public async Task<IActionResult> Put(CustomerDto customer)
         {
             // If the caller doesnt provide id we try getting it from claims
-            var id = customer.Id ?? User.Claims.FirstOrDefault(c => c.Type.Equals(JwtClaimTypes.Subject))?.Value;
+            customer.Id ??= User.Claims.FirstOrDefault(c => c.Type.Equals(JwtClaimTypes.Subject))?.Value;
 
-            if (id == null)
+            if (customer.Id == null)
             {
                 return BadRequest("No Id provided");
             }
 
-            var dbCustomer = new Customer
+            var dbCustomer = await dbContext.Customers.FindAsync(customer.Id);
+
+            if (dbCustomer == null)
             {
-                Id = id,
-                RegistrationNumber = customer.RegistrationNumber
+                return NotFound("Customer not found");
+            }
+
+            dbContext.Attach(dbCustomer);
+
+            dbCustomer.RegistrationNumber = customer.RegistrationNumber;
+
+            await dbContext.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Post(CustomerDto customer)
+        {
+            // If the caller doesnt provide id we try getting it from claims
+            customer.Id ??= User.Claims.FirstOrDefault(c => c.Type.Equals(JwtClaimTypes.Subject))?.Value;
+
+            if (customer.Id == null)
+            {
+                return BadRequest("No Id provided");
+            }
+
+            var dbCustomer = await dbContext.Customers.FindAsync(customer.Id);
+
+            if (dbCustomer != null)
+            {
+                return BadRequest("Customer already exists for this user");
+            }
+
+            dbCustomer = new Customer
+            {
+                Id = customer.Id,
+                RegistrationNumber = customer.RegistrationNumber,
+                Balance = customer.Amount
             };
 
             dbCustomer = (await dbContext.AddAsync(dbCustomer)).Entity;
@@ -66,6 +103,33 @@ namespace BankService.Controllers
             await dbContext.SaveChangesAsync();
 
             return Created($"customer/{dbCustomer.Id}", dbCustomer);
+        }
+
+        [HttpPost("/credits")]
+        public async Task<IActionResult> PostCredits(CustomerDto customer)
+        {
+            // If the caller doesnt provide id we try getting it from claims
+            customer.Id ??= User.Claims.FirstOrDefault(c => c.Type.Equals(JwtClaimTypes.Subject))?.Value;
+
+            if (customer.Id == null)
+            {
+                return BadRequest("No Id provided");
+            }
+
+            var dbCustomer = await dbContext.Customers.FindAsync(customer.Id);
+
+            if (dbCustomer == null)
+            {
+                return NotFound();
+            }
+
+            dbContext.Attach(dbCustomer);
+
+            dbCustomer.Balance += customer.Amount;
+
+            await dbContext.SaveChangesAsync();
+
+            return Ok();
         }
     }
 }
