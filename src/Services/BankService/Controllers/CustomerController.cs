@@ -70,7 +70,7 @@ namespace BankService.Controllers
 
             await dbContext.SaveChangesAsync();
 
-            return Ok();
+            return Ok(dbCustomer);
         }
 
         [HttpPost]
@@ -105,7 +105,7 @@ namespace BankService.Controllers
             return Created($"customer/{dbCustomer.Id}", dbCustomer);
         }
 
-        [HttpPost("/credits")]
+        [HttpPost("credits")]
         public async Task<IActionResult> PostCredits(CustomerDto customer)
         {
             // If the caller doesnt provide id we try getting it from claims
