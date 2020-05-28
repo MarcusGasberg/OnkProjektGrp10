@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  authority: `${window.location.origin}/account-service`,
+  authority: `${window.location.origin}/account-api`,
   clientId: 'angularDockerClient',
   redirectUri: window.location.origin,
   responseType: 'id_token token',
@@ -9,5 +9,6 @@ export const environment = {
   taxingControllerUrl: '',
   paymentControllerUrl: '',
   stockMarketController: '',
-  testApiUrl: 'http://192.168.99.100:5001',
+  bankUrl: `${window.location.origin}/bank-api`,
+  testApiUrl: `${window.location.origin}/bank-api`,
 };

@@ -40,6 +40,7 @@ namespace BankService.Controllers
 
             if (customer == null)
             {
+                logger.LogDebug("Customer not found");
                 return NotFound(id);
             }
 
@@ -54,6 +55,7 @@ namespace BankService.Controllers
 
             if (customer.Id == null)
             {
+                logger.LogDebug("No id provided or found for the User");
                 return BadRequest("No Id provided");
             }
 
@@ -61,6 +63,7 @@ namespace BankService.Controllers
 
             if (dbCustomer == null)
             {
+                logger.LogDebug($"No Customer found in db for id: {customer.Id}");
                 return NotFound("Customer not found");
             }
 
@@ -69,6 +72,8 @@ namespace BankService.Controllers
             dbCustomer.RegistrationNumber = customer.RegistrationNumber;
 
             await dbContext.SaveChangesAsync();
+
+            logger.LogDebug($"Customer updated with id: {customer.Id}");
 
             return Ok(dbCustomer);
         }
@@ -81,6 +86,7 @@ namespace BankService.Controllers
 
             if (customer.Id == null)
             {
+                logger.LogDebug("No id provided or found for the User");
                 return BadRequest("No Id provided");
             }
 
@@ -88,6 +94,7 @@ namespace BankService.Controllers
 
             if (dbCustomer != null)
             {
+                logger.LogDebug($"Customer already exists with id: {customer.Id}");
                 return BadRequest("Customer already exists for this user");
             }
 
@@ -101,6 +108,8 @@ namespace BankService.Controllers
             dbCustomer = (await dbContext.AddAsync(dbCustomer)).Entity;
 
             await dbContext.SaveChangesAsync();
+
+            logger.LogDebug($"Customer created with id: {customer.Id}");
 
             return Created($"customer/{dbCustomer.Id}", dbCustomer);
         }
@@ -128,6 +137,8 @@ namespace BankService.Controllers
             dbCustomer.Balance += customer.Amount;
 
             await dbContext.SaveChangesAsync();
+
+            logger.LogDebug($"Credits added for Customer with id: {customer.Id}");
 
             return Ok();
         }

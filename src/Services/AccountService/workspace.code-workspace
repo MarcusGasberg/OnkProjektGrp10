@@ -11,6 +11,9 @@
     },
     {
       "path": "..\\AuthTestApi"
+    },
+    {
+      "path": "..\\..\\.."
     }
   ],
   "settings": {}

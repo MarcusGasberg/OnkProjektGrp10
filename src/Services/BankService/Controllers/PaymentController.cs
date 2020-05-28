@@ -39,19 +39,28 @@ namespace BankService.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(PaymentDto payment)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             Customer sender = await dbContext.Customers.FindAsync(payment.SenderId);
             Customer receiver = await dbContext.Customers.FindAsync(payment.ReceiverId);
+
             if (sender == null)
             {
+                logger.LogDebug($"Sender not found for id: {sender.Id}");
                 return BadRequest("Sender isn't registered");
             }
             if (receiver == null)
             {
+                logger.LogDebug($"Receiver not found for id: {sender.Id}");
                 return BadRequest("Receiver isn't registered");
             }
 
             if (sender.Balance < payment.Amount)
             {
+                logger.LogDebug($"Sender has insufficient funds id: {sender.Id}");
                 return BadRequest("Insufficient funds");
             }
 
@@ -73,6 +82,8 @@ namespace BankService.Controllers
             receiver.ReceivedPayments.Add(dbPayment);
 
             await dbContext.SaveChangesAsync();
+
+            logger.LogDebug($"Payment created with id: {dbPayment.Id}");
 
             return Created($"payment/{dbPayment.Id}", dbPayment);
         }
