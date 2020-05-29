@@ -1,0 +1,18 @@
+<h1 mat-h1>{{ Name$ | async }}</h1>
+<div *ngIf="BankAccount$ | async as account">
+  <app-bank-account
+    *ngIf="account"
+    [Account]="account"
+    (Save)="onSave($event)"
+    (AddCredits)="onAddCredits()"
+  ></app-bank-account>
+</div>
+<div *ngIf="!(BankAccount$ | async) && !(Loading$ | async)">
+  <p>No Bank Information Found</p>
+  <button class="register-btn" mat-raised-button (click)="openRegisterDialog()">
+    Register Bank
+  </button>
+</div>
+<div *ngIf="(Loading$ | async) == true">
+  <mat-progress-bar></mat-progress-bar>
+</div>

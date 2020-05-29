@@ -4,10 +4,16 @@
       "path": "..\\WebappService"
     },
     {
+      "path": "..\\BankService"
+    },
+    {
       "path": "."
     },
     {
-      "path": ".."
+      "path": "..\\AuthTestApi"
+    },
+    {
+      "path": "..\\..\\.."
     }
   ],
   "settings": {}

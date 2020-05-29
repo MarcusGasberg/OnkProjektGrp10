@@ -5,15 +5,15 @@
 export const environment = {
   production: false,
   authority: `${window.location.origin}/account-service`,
-  clientId: 'angularClient',
+  clientId: 'angularDebugClient',
   redirectUri: window.location.origin,
   responseType: 'id_token token',
-  scope:
-    'openid profile taxingController paymentController stockMarketController api1',
+  scope: 'openid profile api1 taxingController paymentController stockMarketController bankController',
   taxingControllerUrl: '',
   paymentControllerUrl: '',
   stockMarketController: '',
-  testApiUrl: 'http://localhost:5001',
+  bankUrl: 'http://localhost:5004',
+  testApiUrl: 'http://localhost:5004',
 };
 
 /*

@@ -1,0 +1,23 @@
+<h2 mat-dialog-title>Add Credits</h2>
+
+<mat-dialog-content [formGroup]="form">
+  <mat-form-field>
+    <input
+      type="number"
+      matInput
+      placeholder="Amount $"
+      formControlName="amount"
+    />
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button class="mat-raised-button" (click)="cancel()">Close</button>
+  <button
+    class="mat-raised-button mat-primary"
+    (click)="save()"
+    [disabled]="!form.valid"
+  >
+    Save
+  </button>
+</mat-dialog-actions>

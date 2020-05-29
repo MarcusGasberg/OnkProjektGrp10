@@ -25,7 +25,8 @@ namespace AccountService
                 new ApiResource("api1", "Test Api"),
                 new ApiResource("taxingController", "Taxing Controller"),
                 new ApiResource("paymentController", "Payment Controller"),
-                new ApiResource("stockMarketController", "Stock Market Controller")
+                new ApiResource("stockMarketController", "Stock Market Controller"),
+                new ApiResource("bankController", "Stock Market Controller")
             };
 
 
@@ -41,7 +42,7 @@ namespace AccountService
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
                     ClientSecrets = { new Secret("511536EF-F270-4058-80CA-1C89C192F69A".Sha256()) },
 
-                    AllowedScopes = { "api1" },
+                    AllowedScopes = { "api1", "taxingController", "paymentController", "stockMarketController", "bankController" },
                 },
                 new Client
                 {
@@ -71,10 +72,11 @@ namespace AccountService
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.Email,
+                        "api1",
                         "taxingController",
                         "paymentController",
                         "stockMarketController",
-                        "api1"
+                        "bankController",
                     }
                 },
                 new Client
@@ -105,17 +107,18 @@ namespace AccountService
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.Email,
+                        "api1",
                         "taxingController",
                         "paymentController",
                         "stockMarketController",
-                        "api1"
+                        "bankController",
                     }
                 },
                 new Client
                 {
                     ClientId = "angularClient",
                     ClientName = "Angular Client",
-                    ClientUri = "http://web-app-service:4200",
+                    ClientUri = "http://web-app:4200",
 
                     AllowedGrantTypes = GrantTypes.Implicit,
 
@@ -125,12 +128,12 @@ namespace AccountService
 
                     RedirectUris =
                     {
-                        "http://web-app-service:4200",
-                        "http://web-app-service:4200/callback",
+                        "http://web-app:4200",
+                        "http://web-app:4200/callback",
                     },
 
-                    PostLogoutRedirectUris = { "http://web-app-service:4200" },
-                    AllowedCorsOrigins = { "http://web-app-service:4200" },
+                    PostLogoutRedirectUris = { "http://web-app:4200" },
+                    AllowedCorsOrigins = { "http://web-app:4200" },
 
                     AllowAccessTokensViaBrowser = true,
                     AccessTokenLifetime = 3600,
@@ -139,10 +142,11 @@ namespace AccountService
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.Email,
+                        "api1",
                         "taxingController",
                         "paymentController",
                         "stockMarketController",
-                        "api1"
+                        "bankController",
                     }
                 }
             };
