@@ -10,4 +10,5 @@ export const environment = {
   paymentControllerUrl: '',
   stockMarketController: '',
   testApiUrl: 'http://192.168.99.100:5001',
+  websocketUrl: 'ws://192.168.99.100:5000',
 };
