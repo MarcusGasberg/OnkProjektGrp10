@@ -5,7 +5,7 @@ export const environment = {
   redirectUri: window.location.origin,
   responseType: 'id_token token',
   scope:
-    'openid profile taxingController paymentController stockMarketController api1',
+    'openid profile taxingController paymentController stockMarketController api1 bankController',
   taxingControllerUrl: '',
   paymentControllerUrl: '',
   stockMarketController: '',

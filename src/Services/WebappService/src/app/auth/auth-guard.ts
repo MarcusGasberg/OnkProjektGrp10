@@ -20,7 +20,7 @@ export class AuthorizationGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean> {
-    return this.oidcSecurityService.isAuthenticated$.pipe(
+    return this.oidcSecurityService.checkAuth().pipe(
       map((isAuthorized: boolean) => {
         if (!isAuthorized) {
           this.router.navigate(['/unauthorized']);

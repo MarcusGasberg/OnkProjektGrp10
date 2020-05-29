@@ -4,10 +4,12 @@ import {
   HttpHandler,
   HttpEvent,
   HttpHeaders,
+  HttpErrorResponse,
 } from '@angular/common/http';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { Injectable } from '@angular/core';
+import { catchError } from 'rxjs/operators';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {

@@ -8,8 +8,7 @@ export const environment = {
   clientId: 'angularDebugClient',
   redirectUri: window.location.origin,
   responseType: 'id_token token',
-  scope:
-    'openid profile taxingController paymentController stockMarketController api1',
+  scope: 'openid profile api1 taxingController paymentController stockMarketController bankController',
   taxingControllerUrl: '',
   paymentControllerUrl: '',
   stockMarketController: '',

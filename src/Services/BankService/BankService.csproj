@@ -3,6 +3,10 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
+  <PropertyGroup>
+    <EnvironmentName>Development</EnvironmentName>
+    <EnvironmentName>Production</EnvironmentName>
+  </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="IdentityServer4" Version="3.1.3" />

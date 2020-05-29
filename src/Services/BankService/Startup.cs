@@ -78,6 +78,11 @@ namespace BankService
             {
                 endpoints.MapControllers();
             });
+
+            using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                scope.ServiceProvider.GetService<BankDbContext>().Database.Migrate();
+            }
         }
     }
 }

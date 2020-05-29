@@ -72,11 +72,11 @@ namespace AccountService
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.Email,
+                        "api1",
                         "taxingController",
                         "paymentController",
                         "stockMarketController",
                         "bankController",
-                        "api1"
                     }
                 },
                 new Client
@@ -107,18 +107,18 @@ namespace AccountService
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.Email,
+                        "api1",
                         "taxingController",
                         "paymentController",
                         "stockMarketController",
                         "bankController",
-                        "api1"
                     }
                 },
                 new Client
                 {
                     ClientId = "angularClient",
                     ClientName = "Angular Client",
-                    ClientUri = "http://web-app-service:4200",
+                    ClientUri = "http://web-app:4200",
 
                     AllowedGrantTypes = GrantTypes.Implicit,
 
@@ -128,12 +128,12 @@ namespace AccountService
 
                     RedirectUris =
                     {
-                        "http://web-app-service:4200",
-                        "http://web-app-service:4200/callback",
+                        "http://web-app:4200",
+                        "http://web-app:4200/callback",
                     },
 
-                    PostLogoutRedirectUris = { "http://web-app-service:4200" },
-                    AllowedCorsOrigins = { "http://web-app-service:4200" },
+                    PostLogoutRedirectUris = { "http://web-app:4200" },
+                    AllowedCorsOrigins = { "http://web-app:4200" },
 
                     AllowAccessTokensViaBrowser = true,
                     AccessTokenLifetime = 3600,
@@ -142,11 +142,11 @@ namespace AccountService
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.Email,
+                        "api1",
                         "taxingController",
                         "paymentController",
                         "stockMarketController",
                         "bankController",
-                        "api1"
                     }
                 }
             };
