@@ -34,6 +34,7 @@ import { AccountComponent } from './account/account.component';
 import { BankAccountComponent } from './bank-account/bank-account.component';
 import { BankRegisterComponent } from './bank-register/bank-register.component';
 import { AddCreditsComponent } from './add-credits/add-credits.component';
+import { ToastrModule } from 'ngx-toastr';
 
 export function configureAuth(oidcConfigService: OidcConfigService) {
   return () =>
@@ -78,6 +79,7 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
     MatProgressBarModule,
     HttpClientModule,
     AuthModule.forRoot(),
+    ToastrModule.forRoot(),
   ],
   providers: [
     OidcConfigService,

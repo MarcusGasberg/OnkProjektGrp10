@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { BankAccount } from '../models/account';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { VirtualTimeScheduler } from 'rxjs';
 
 @Component({
   selector: 'app-bank-account',
@@ -37,6 +38,7 @@ export class BankAccountComponent implements OnInit {
 
   save(): void {
     this.Save.emit(this.form.value as BankAccount);
+    this.form.markAsPristine();
   }
 
   addCredits(): void {

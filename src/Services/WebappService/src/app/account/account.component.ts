@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { BankRegisterComponent } from '../bank-register/bank-register.component';
 import { tap, map } from 'rxjs/operators';
 import { AddCreditsComponent } from '../add-credits/add-credits.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-account',
@@ -19,7 +20,8 @@ export class AccountComponent implements OnInit {
 
   constructor(
     private accountService: AccountService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -49,7 +51,9 @@ export class AccountComponent implements OnInit {
   }
 
   onSave(account: BankAccount): void {
-    this.accountService.putBankAccount(account).subscribe();
+    this.accountService.putBankAccount(account).subscribe({
+      next: (_) => this.toastr.success('Account saved'),
+    });
   }
 
   onAddCredits() {
@@ -64,7 +68,9 @@ export class AccountComponent implements OnInit {
           return;
         }
 
-        this.accountService.addCredits(result).subscribe();
+        this.accountService.addCredits(result).subscribe({
+          next: (_) => this.toastr.success('Credits added'),
+        });
       },
     });
   }
