@@ -2,6 +2,7 @@ version: '3'
 services:
   web-app:
     container_name: 'web-app'
+    image: brunton/web-app
     build: ./WebappService
     ports:
       - '4200:80'
@@ -12,6 +13,7 @@ services:
 
   account:
     container_name: 'account'
+    image: brunton/account
     build: ./AccountService
     restart: on-failure
     ports:
@@ -23,6 +25,7 @@ services:
 
   bank:
     container_name: 'bank'
+    image: brunton/bank
     build: ./BankService
     restart: on-failure
     ports:
@@ -34,6 +37,7 @@ services:
 
   stockmarket:
     container_name: 'stockmarket'
+    image: brunton/stockmarket
     build: ./StockMarketService
     restart: on-failure
     ports:
