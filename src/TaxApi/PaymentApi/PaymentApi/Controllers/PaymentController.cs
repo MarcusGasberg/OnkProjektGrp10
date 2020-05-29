@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -41,6 +42,7 @@ namespace PaymentApi.Controllers
             //create HttpContent body
 
             var contentTax = new Tax(body.Price, body.BuyerID);
+            
             //get tax
 
             var taxResponse = await _client.PostAsync(requestUri: "https://localhost:5003", contentTax);
@@ -49,15 +51,11 @@ namespace PaymentApi.Controllers
 
             //call charge requester
 
-            var chargeResponse = await _client.PostAsync("payprovider", taxResponse.Content);
+            var payment = new PaymentDTO(body.Price,body.BuyerID,body.SellerId );
+
+            var chargeResponse = await _client.PostAsync("http://localhost:5004/payment",payment);
 
             chargeResponse.EnsureSuccessStatusCode();
-
-            //call pay provider
-
-            var payResponse = await _client.PutAsync("payment", chargeResponse.Content);
-
-            payResponse.EnsureSuccessStatusCode();
 
             return Ok();
 
@@ -119,6 +117,38 @@ namespace PaymentApi.Controllers
             return true;
         }
     }
+
+    public class PaymentDTO : HttpContent
+    {
+        private readonly MemoryStream _Stream = new MemoryStream();
+
+        public int Amount { get; set; }
+
+        public string ReceiverId { get; set; }
+
+        public string SenderId { get; set; }
+
+        public PaymentDTO(int Amount, string ReceiverId, string SenderId)
+        {
+            this.Amount = Amount;
+            this.ReceiverId = ReceiverId;
+            this.SenderId = SenderId;
+        }
+        protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
+        {
+            _Stream.CopyTo(stream);
+            var tcs = new TaskCompletionSource<object>();
+            tcs.SetResult(null);
+            return tcs.Task;
+        }
+
+        protected override bool TryComputeLength(out long length)
+        {
+            length = _Stream.Length;
+            return true;
+        }
+    }
+
 }
 
 
