@@ -142,7 +142,9 @@ namespace AccountService
                 Log.Debug("Clients being populated");
                 foreach (var client in Config.Clients.ToList())
                 {
-                    context.Clients.Add(client.ToEntity());
+                    var clientEntity = client.ToEntity();
+                    context.Clients.Add(clientEntity);
+                    Log.Debug("Adding client: {0}", clientEntity);
                 }
                 context.SaveChanges();
             }
@@ -156,7 +158,9 @@ namespace AccountService
                 Log.Debug("IdentityResources being populated");
                 foreach (var resource in Config.Ids.ToList())
                 {
-                    context.IdentityResources.Add(resource.ToEntity());
+                    var resourceEntity = resource.ToEntity();
+                    context.IdentityResources.Add(resourceEntity);
+                    Log.Debug("Adding Identity Resource: {0}", resourceEntity);
                 }
                 context.SaveChanges();
             }
@@ -168,9 +172,11 @@ namespace AccountService
             if (!context.ApiResources.Any())
             {
                 Log.Debug("ApiResources being populated");
-                foreach (var resource in Config.Apis.ToList())
+                foreach (var api in Config.Apis.ToList())
                 {
-                    context.ApiResources.Add(resource.ToEntity());
+                    var apiEntity = api.ToEntity();
+                    context.ApiResources.Add(apiEntity);
+                    Log.Debug("Adding Api Resource: {0}", apiEntity);
                 }
                 context.SaveChanges();
             }

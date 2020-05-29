@@ -4,14 +4,20 @@ import {
   HttpHandler,
   HttpEvent,
   HttpHeaders,
+  HttpErrorResponse,
 } from '@angular/common/http';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { Injectable } from '@angular/core';
+import { catchError } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(public oidcSecurityService: OidcSecurityService) {}
+  constructor(
+    public oidcSecurityService: OidcSecurityService,
+    private toastr: ToastrService
+  ) {}
 
   intercept(
     req: HttpRequest<any>,
@@ -23,6 +29,15 @@ export class AuthInterceptor implements HttpInterceptor {
       .set('Content-Type', 'application/json');
 
     const authReq = req.clone({ headers });
-    return next.handle(authReq);
+    return next
+      .handle(authReq)
+      .pipe(catchError((err) => this.handleHttpError(err)));
+  }
+
+  handleHttpError(err) {
+    if (err instanceof HttpErrorResponse) {
+      this.toastr.error('401', 'Unauthorized');
+    }
+    return throwError(err);
   }
 }

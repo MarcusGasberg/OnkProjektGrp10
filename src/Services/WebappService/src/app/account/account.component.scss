@@ -1,0 +1,9 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  margin: 2rem 10%;
+  .register-btn {
+    float: left;
+    margin-right: auto;
+  }
+}

@@ -1,0 +1,14 @@
+:host {
+  display: flex;
+  flex-direction: column;
+}
+
+.title-with-button {
+  display: flex;
+  justify-content: space-between;
+}
+
+.save-btn {
+  display: flex;
+  float: right;
+}

@@ -1,0 +1,28 @@
+<form [formGroup]="form">
+  <div class="title-with-button">
+    <h2>Registration Number:</h2>
+    <button mat-button (click)="edit()">Edit</button>
+  </div>
+  <mat-form-field>
+    <input
+      matInput
+      placeholder="Registration number"
+      formControlName="registrationNumber"
+    />
+  </mat-form-field>
+  <div class="title-with-button">
+    <h2>Balance:</h2>
+    <button mat-button (click)="addCredits()">Add funds</button>
+  </div>
+  <p>{{ Account.balance }} $</p>
+
+  <button
+    class="save-btn"
+    [disabled]="!form.dirty || !form.valid"
+    type="submit"
+    (click)="save()"
+    mat-raised-button
+  >
+    Save
+  </button>
+</form>
