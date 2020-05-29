@@ -7,11 +7,10 @@ using StockMarketService.Models;
 
 public class Stock
 {
-    [Key]
-    public string Name { get; set; }
-    public List<StockPrice> HistoricPrice { get; set; }
+    public string Id{ get; set; }
 
-    public int AmountForSale { get; set; }
-    
-    
+    public string Name { get; set; }
+    public ICollection<StockPrice> HistoricPrice { get; set; }
+    public ICollection<Seller> Seller { get; set; }
+
 }

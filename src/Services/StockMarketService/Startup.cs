@@ -27,6 +27,11 @@ namespace StockMarketService {
         public void ConfigureServices(IServiceCollection services) {
             services.AddControllers();
             services.AddWebsocketManager();
+            
+            services.AddControllersWithViews()
+                .AddNewtonsoftJson(options =>
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

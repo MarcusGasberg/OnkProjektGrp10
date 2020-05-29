@@ -44,5 +44,6 @@ namespace StockMarketService
         private void PutStock(Stock stock) {
             Commands.UpdateStock(stock, _manager);
         }
+
     }
 }
