@@ -1,43 +1,54 @@
-version: "3"
+version: '3'
 services:
   web-app:
-    container_name: "web-app"
+    container_name: 'web-app'
     build: ./WebappService
     ports:
-      - "4200:80"
+      - '4200:80'
     depends_on:
       - account
     networks:
       - app-network
 
   account:
-    container_name: "account"
+    container_name: 'account'
     build: ./AccountService
     restart: on-failure
     ports:
-      - "5000:80"
+      - '5000:80'
     depends_on:
       - user-db
     networks:
       - app-network
 
   bank:
-    container_name: "bank"
+    container_name: 'bank'
     build: ./BankService
     restart: on-failure
     ports:
-      - "5004:80"
+      - '5004:80'
     depends_on:
       - bank-db
     networks:
       - app-network
 
-  user-db:
-    image: "mcr.microsoft.com/mssql/server:2017-CU19-ubuntu-16.04"
-    container_name: "user-db"
+  stockmarket:
+    container_name: 'stockmarket'
+    build: ./StockMarketService
     restart: on-failure
     ports:
-      - "1433:1433"
+      - '5010:80'
+    depends_on:
+      - stock-db
+    networks:
+      - app-network
+
+  user-db:
+    image: 'mcr.microsoft.com/mssql/server:2017-CU19-ubuntu-16.04'
+    container_name: 'user-db'
+    restart: on-failure
+    ports:
+      - '1433:1433'
     environment:
       - ACCEPT_EULA=Y
       - MSSQL_SA_PASSWORD=Passw0rd
@@ -49,11 +60,11 @@ services:
       - app-network
 
   bank-db:
-    image: "mcr.microsoft.com/mssql/server:2017-CU19-ubuntu-16.04"
-    container_name: "bank-db"
+    image: 'mcr.microsoft.com/mssql/server:2017-CU19-ubuntu-16.04'
+    container_name: 'bank-db'
     restart: on-failure
     ports:
-      - "1434:1433"
+      - '1434:1433'
     environment:
       - ACCEPT_EULA=Y
       - MSSQL_SA_PASSWORD=Passw0rd
@@ -64,9 +75,26 @@ services:
     networks:
       - app-network
 
+  stock-db:
+    image: 'mcr.microsoft.com/mssql/server:2017-CU19-ubuntu-16.04'
+    container_name: 'stock-db'
+    restart: on-failure
+    ports:
+      - '1435:1433'
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Passw0rd
+      - SA_PASSWORD=Passw0rd
+    volumes:
+      - stock-db-data:/var/opt/mssql/
+      - /var/opt/mssql/data
+    networks:
+      - app-network
+
 volumes:
   user-db-data:
   bank-db-data:
+  stock-db-data:
 
 networks:
   app-network:

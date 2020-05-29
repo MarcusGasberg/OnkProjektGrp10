@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: account
+  name: account
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: account
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: account
+    spec:
+      containers:
+        - image: brunton/account
+          imagePullPolicy: Always
+          name: account
+          ports:
+            - containerPort: 80
+          resources: {}
+      restartPolicy: Always
+      serviceAccountName: ''
+      volumes: null
+status: {}

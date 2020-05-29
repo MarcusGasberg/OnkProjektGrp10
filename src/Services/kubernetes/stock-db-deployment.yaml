@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: stock-db
+  name: stock-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stock-db
+  template:
+    metadata:
+      labels:
+        app: stock-db
+    spec:
+      containers:
+        - env:
+            - name: ACCEPT_EULA
+              value: 'Y'
+            - name: MSSQL_SA_PASSWORD
+              value: Passw0rd
+            - name: SA_PASSWORD
+              value: Passw0rd
+          image: mcr.microsoft.com/mssql/server:2017-CU19-ubuntu-16.04
+          name: stock-db
+          ports:
+            - containerPort: 1433
+          resources: {}
+          volumeMounts:
+            - mountPath: /var/opt/mssql/
+              name: stock-db-data
+            - mountPath: /var/opt/mssql/data
+              name: stock-db-claim1
+      restartPolicy: Always
+      serviceAccountName: ''
+      volumes:
+        - name: stock-db-data
+          persistentVolumeClaim:
+            claimName: stock-db-data
+        - name: stock-db-claim1
+          persistentVolumeClaim:
+            claimName: stock-db-claim1
+status: {}

@@ -11,47 +11,47 @@ using StockMarketService.Models;
 
 namespace StockMarketService
 {
-    public static class Commands
+    public class Commands
     {
-        public static void AddNewStock(Stock stock, WebSocketConnectionManager manager) {
-            using var db = new ApplicationDbContext();
+        private ApplicationDbContext context;
+
+        public Commands(ApplicationDbContext context)
+        {
+            this.context = context;
+        }
+        public void AddNewStock(Stock stock, WebSocketConnectionManager manager) {
             Console.WriteLine(JsonSerializer.Serialize(stock));
-            db.Stocks.Add(stock);
-            db.SaveChanges();
+            context.Stocks.Add(stock);
+            context.SaveChanges();
             var updateTask = new Thread(async () => await manager.UpdateAllClients(GetStocks()));
             updateTask.Start();
         }
 
-        public static void UpdateStockPrice(string stockName,decimal newStockPrice, WebSocketConnectionManager manager) {
-            using var db = new ApplicationDbContext();
-            var stock = db.Stocks.Find(stockName);
+        public void UpdateStockPrice(string stockName,decimal newStockPrice, WebSocketConnectionManager manager) {
+            var stock = context.Stocks.Find(stockName);
             stock.HistoricPrice.Add(new StockPrice(newStockPrice, DateTime.Now));
-            db.Stocks.Update(stock);
+            context.Stocks.Update(stock);
             var updateTask = new Thread(async () => await manager.UpdateAllClients(GetStocks()));
             updateTask.Start();
         }
 
-        public static List<Stock> GetStocks() {
-            using var db = new ApplicationDbContext();
-            return db.Stocks.Include(s => s.HistoricPrice).Include(s => s.Seller).ToList();
+        public List<Stock> GetStocks() {
+            return context.Stocks.Include(s => s.HistoricPrice).Include(s => s.Seller).ToList();
         }
         
-        public static Stock GetStock(string name) {
-            using var db = new ApplicationDbContext();
-            return db.Stocks.Include(s => s.HistoricPrice).Include(s => s.Seller).FirstOrDefault(s => s.Name == name);
+        public Stock GetStock(string name) {
+            return context.Stocks.Include(s => s.HistoricPrice).Include(s => s.Seller).FirstOrDefault(s => s.Name == name);
         }
         
-        public static void UpdateStock(Stock stock, WebSocketConnectionManager manager) {
-            using var db = new ApplicationDbContext();
+        public void UpdateStock(Stock stock, WebSocketConnectionManager manager) {
             Console.WriteLine(JsonSerializer.Serialize(stock));
-            db.Stocks.Update(stock);
-            db.SaveChanges();
+            context.Stocks.Update(stock);
+            context.SaveChanges();
             var updateTask = new Thread(async () => await manager.UpdateAllClients(GetStocks()));
             updateTask.Start();
         }
         
-        public static Seller GetSeller(string name, int number) {
-            using var db = new ApplicationDbContext();
+        public Seller GetSeller(string name, int number) {
             Stock stock = GetStock(name);
             Seller seller = stock.Seller.FirstOrDefault(s => s.SellingAmount >= number);
             if (seller == null ) {
@@ -60,8 +60,7 @@ namespace StockMarketService
             return seller;
         }
 
-        public static void SellStock(string name, int number) {
-            using var db = new ApplicationDbContext();
+        public bool SellStock(string name, int number) {
             Stock stock = GetStock(name);
             Seller seller = stock.Seller.FirstOrDefault(s => s.SellingAmount >= number);
             if (seller == null ) {
@@ -71,7 +70,8 @@ namespace StockMarketService
             stock.Seller.Remove(seller);
             seller.SellingAmount = seller.SellingAmount - number;
             stock.Seller.Add(seller);
-            db.SaveChanges();
+            context.Stocks.Update(stock);
+            context.SaveChanges();
             return true;
         }
 

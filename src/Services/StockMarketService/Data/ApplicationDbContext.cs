@@ -7,32 +7,26 @@ namespace StockMarketService
     {
         public DbSet<Stock> Stocks { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-            => options.UseSqlite("Data Source=blogging.db");
+        /*protected override void OnConfiguring(DbContextOptionsBuilder options)
+        {
+            options.UseSqlServer("Server=stock-db, 1433;Database=StockDb;User=sa;Password=Passw0rd");
+        }*/
         
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        {
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<StockPrice>()
                 .HasOne<Stock>(s => s.stock)
-                .WithMany(s => s.HistoricPrice)
-                .IsRequired();
+                .WithMany(s => s.HistoricPrice);
 
-            modelBuilder.Entity<Stock>()
-                .Property(s => s.Id)
-                .ValueGeneratedOnAdd();
-            
-            modelBuilder.Entity<StockPrice>()
-                .Property(s => s.Id)
-                .ValueGeneratedOnAdd();
-            
-            modelBuilder.Entity<Seller>()
-                .Property(s => s.Id)
-                .ValueGeneratedOnAdd();
+            modelBuilder.Entity<Stock>();
 
             modelBuilder.Entity<Seller>()
                 .HasOne<Stock>(s => s.Stock)
-                .WithMany(s => s.Seller)
-                .IsRequired();
+                .WithMany(s => s.Seller);
         }
         
     }

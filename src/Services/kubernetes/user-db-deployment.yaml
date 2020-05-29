@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: user-db
+  name: user-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-db
+  template:
+    metadata:
+      labels:
+        app: user-db
+    spec:
+      containers:
+        - env:
+            - name: ACCEPT_EULA
+              value: 'Y'
+            - name: MSSQL_SA_PASSWORD
+              value: Passw0rd
+            - name: SA_PASSWORD
+              value: Passw0rd
+          image: mcr.microsoft.com/mssql/server:2017-CU19-ubuntu-16.04
+          name: user-db
+          ports:
+            - containerPort: 1433
+          resources: {}
+          volumeMounts:
+            - mountPath: /var/opt/mssql/
+              name: user-db-data
+            - mountPath: /var/opt/mssql/data
+              name: user-db-claim1
+      restartPolicy: Always
+      serviceAccountName: ''
+      volumes:
+        - name: user-db-data
+          persistentVolumeClaim:
+            claimName: user-db-data
+        - name: user-db-claim1
+          persistentVolumeClaim:
+            claimName: user-db-claim1
+status: {}

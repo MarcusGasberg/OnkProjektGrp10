@@ -13,8 +13,11 @@ namespace StockMarketService.Middleware {
     public class WebsocketServerMiddleware {
         private readonly RequestDelegate _next;
         private readonly WebSocketConnectionManager _manager;
+        private Commands commands;
 
-        public WebsocketServerMiddleware(RequestDelegate next, WebSocketConnectionManager manager) {
+        public WebsocketServerMiddleware(RequestDelegate next, WebSocketConnectionManager manager, ApplicationDbContext dbContext)
+        {
+            this.commands = new Commands(dbContext);
             _next = next;
             _manager = manager;
         }
@@ -50,7 +53,7 @@ namespace StockMarketService.Middleware {
             WsMessage msg = JsonConvert.DeserializeObject<WsMessage>(parse);
             if (msg.topic == "stocks" && msg.action == "subscribe") {
                 var id = _manager.AddSocket(webSocket);
-                await _manager.SendMessage(id, msg.topic, Commands.GetStocks());
+                await _manager.SendMessage(id, msg.topic, commands.GetStocks());
             }
         }
 

@@ -16,14 +16,21 @@ namespace StockMarketService {
     [ApiController]
     [Route("[controller]")]
     public class StockBrokerController : Controller {
-        
-        
+
+        public StockBrokerController(ApplicationDbContext dbContext)
+        {
+            commands = new Commands(dbContext);
+        }
+
+        private Commands commands;
+
+
         [HttpPost]
         [Route("SellStock")]
-        public async Task<ActionResult> SellStock([FromBody] TradeRequest request) {
-            if (Commands.GetSeller(request.StockName, request.Number) != null) {
-                var stock = Commands.GetStock(request.StockName);
-                var seller = Commands.GetSeller(request.StockName, request.Number);
+        public async Task<StatusCodeResult> SellStock([FromBody] TradeRequest request) {
+            if (commands.GetSeller(request.StockName, request.Number) != null) {
+                var stock = commands.GetStock(request.StockName);
+                var seller = commands.GetSeller(request.StockName, request.Number);
                 var accessToken = await HttpContext.GetTokenAsync("access_token");
                 var client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
@@ -31,16 +38,17 @@ namespace StockMarketService {
                 var data = new {
                     Price = stock.HistoricPrice.FirstOrDefault().Price,
                     StockName = stock.Name,
-                    SellerId = seller.Id
+                    SellerId = seller.SellerId
                 };
 
                 var res = await client.PostAsync("Some address", new StringContent(JsonSerializer.Serialize(data)));
 
-                if (res.StatusCode != HttpStatusCode.OK) return StatusCode(403);
-                Commands.SellStock(request.StockName, request.Number);
+                if (res.StatusCode != HttpStatusCode.OK || !commands.SellStock(request.StockName, request.Number)) return StatusCode(403);
+                
                 return StatusCode(200);
 
             }
+            return StatusCode(403);
         }
          
     }
