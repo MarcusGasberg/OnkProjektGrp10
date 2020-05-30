@@ -2,52 +2,18 @@
 title Auth Class Diagram
 skinparam monochrome true
 
-package AccountService{
-    class AccountController {
-        -UserManager usermanager
-        -SignInManager signInManager 
-        +Login(LoginModel model)
-        +Logout(LogoutModel model)
-        +Authorize(string token)
-        +GetSignedInUser(): User
-    }
+state auth_choice <<choice>>
+state login_choice <<choice>>
 
-    class LoginModel {
-        +string UserName
-        +string Password
-        +string ReturnUrl
-    }
+[*] --> Unauthorized
 
-    class LogoutModel {
-        +string UserID
-    }
-    
-    class User {
-        +string Id
-        +string FullName
-    }
+Unauthorized --> auth_choice: WebAppService::login()
+auth_choice --> Authorized: [WebAppService::checkAuth() == true]
+auth_choice --> LoggingIn: [WebAppService::checkAuth() == false]
 
-    AccountController --> LoginModel
-    AccountController --> LogoutModel
-    AccountController --> User
-}
 
-package WebAppService {
-    class AuthService {
-        -OidcSecurityService oidcSecurityService
-        +login()
-        +logout()
-        +isLoggedIn()
-        +getAccountInfo()
-        +checkAuth()
-    }
-
-    class AuthGuard {
-        +canActivate(string route)
-    }
-
-    AuthService --> AccountController
-    AuthGuard --> AuthService
-}
+LoggingIn --> login_choice: AccountService::Login(model)
+login_choice --> Authorized : [AccountService::ValidateCredentials(model) == true]
+login_choice --> [*] : [AccountService::ValidateCredentials(model) == false]
 
 @enduml
