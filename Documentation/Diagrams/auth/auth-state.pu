@@ -16,4 +16,6 @@ LoggingIn --> login_choice: AccountService::Login(model)
 login_choice --> Authorized : [AccountService::ValidateCredentials(model) == true]
 login_choice --> [*] : [AccountService::ValidateCredentials(model) == false]
 
+Authorized --> Unauthorized: WebAppService::logout()
+
 @enduml
