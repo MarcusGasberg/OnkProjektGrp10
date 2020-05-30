@@ -1,0 +1,53 @@
+@startuml Component
+title Auth Class Diagram
+skinparam monochrome true
+
+package AccountService{
+    class AccountController {
+        -UserManager usermanager
+        -SignInManager signInManager 
+        +Login(LoginModel model)
+        +Logout(LogoutModel model)
+        +Authorize(string token)
+        +GetSignedInUser(): User
+    }
+
+    class LoginModel {
+        +string UserName
+        +string Password
+        +string ReturnUrl
+    }
+
+    class LogoutModel {
+        +string UserID
+    }
+    
+    class User {
+        +string Id
+        +string FullName
+    }
+
+    AccountController --> LoginModel
+    AccountController --> LogoutModel
+    AccountController --> User
+}
+
+package WebAppService {
+    class AuthService {
+        -OidcSecurityService oidcSecurityService
+        +login()
+        +logout()
+        +isLoggedIn()
+        +getAccountInfo()
+        +checkAuth()
+    }
+
+    class AuthGuard {
+        +canActivate(string route)
+    }
+
+    AuthService --> AccountController
+    AuthGuard --> AuthService
+}
+
+@enduml
