@@ -1,0 +1,40 @@
+@startuml Component
+title Component Diagram
+skinparam monochrome true
+
+component AccountService <<web service>> {
+}
+
+component BankService <<web service>> {
+}
+
+component TaxingService <<web service>> {
+}
+
+component PaymentService <<web service>> {
+}
+
+component StockMarketService <<web service>>{
+}
+
+component WebAppService <<client>> {
+}
+
+() authorize
+() account
+
+
+AccountService - authorize
+AccountService - account
+authorize )- BankService
+authorize )- StockMarketService
+
+BankService -0)- WebAppService: customerInfo
+StockMarketService -0)- WebAppService: trade
+account )- WebAppService : authentication
+
+TaxingService -0)- PaymentService: tax
+StockMarketService -0)- PaymentService: pay
+BankService -0)- PaymentService  : transaction
+
+@enduml
