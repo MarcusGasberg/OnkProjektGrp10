@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace PaymentApi.Controllers
 {
@@ -21,6 +22,7 @@ namespace PaymentApi.Controllers
     [Route("[controller]")]
     public class PaymentController : ControllerBase{
         private HttpClient _client = new HttpClient();
+
 
         private readonly ILogger<PaymentController> _logger;
 
@@ -37,7 +39,7 @@ namespace PaymentApi.Controllers
             
         var accessToken = await HttpContext.GetTokenAsync("access_token");
 
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         
         var taxdata = new {
             Price = body.Price,
