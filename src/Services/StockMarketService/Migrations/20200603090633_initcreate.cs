@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace StockMarketService.Migrations
 {
-    public partial class addedId : Migration
+    public partial class initcreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -26,7 +26,7 @@ namespace StockMarketService.Migrations
                     Id = table.Column<string>(nullable: false),
                     SellerId = table.Column<string>(nullable: true),
                     SellingAmount = table.Column<int>(nullable: false),
-                    StockId = table.Column<string>(nullable: false)
+                    StockId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -36,7 +36,7 @@ namespace StockMarketService.Migrations
                         column: x => x.StockId,
                         principalTable: "Stocks",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -46,7 +46,7 @@ namespace StockMarketService.Migrations
                     Id = table.Column<string>(nullable: false),
                     Price = table.Column<decimal>(nullable: false),
                     UpdateTime = table.Column<DateTime>(nullable: false),
-                    stockId = table.Column<string>(nullable: false)
+                    stockId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -56,7 +56,7 @@ namespace StockMarketService.Migrations
                         column: x => x.stockId,
                         principalTable: "Stocks",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(

@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: approot
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: approot.bar.com
+      http:
+        paths:
+          - backend:
+              serviceName: web-app
+              servicePort: 80
+            path: /
+          - backend:
+              serviceName: account
+              servicePort: 5000
+            path: /account
