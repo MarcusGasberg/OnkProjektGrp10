@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -21,10 +18,16 @@ namespace TaxApi.Controllers
         [Route("tax")]
         public async Task<Tax> CalTax(Tax requestTax) {
 
-            var tax =  new Tax(requestTax.Amount / 100, requestTax.Id);
+            var tax = Task.Run(()=>taxCalculation(requestTax));
+            tax.Wait();
 
-           return tax;
+           return await tax;
         }
+
+        public Tax taxCalculation(Tax requestTax){
+            return new Tax(requestTax.Amount/100, requestTax.Id);
+        }
+
 
 
 
