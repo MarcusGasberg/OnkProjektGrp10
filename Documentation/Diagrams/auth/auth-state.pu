@@ -1,0 +1,21 @@
+@startuml Component
+title Auth Class Diagram
+skinparam monochrome true
+
+state auth_choice <<choice>>
+state login_choice <<choice>>
+
+[*] --> Unauthorized
+
+Unauthorized --> auth_choice: WebAppService::login()
+auth_choice --> Authorized: [WebAppService::checkAuth() == true]
+auth_choice --> LoggingIn: [WebAppService::checkAuth() == false]
+
+
+LoggingIn --> login_choice: AccountService::Login(model)
+login_choice --> Authorized : [AccountService::ValidateCredentials(model) == true]
+login_choice --> [*] : [AccountService::ValidateCredentials(model) == false]
+
+Authorized --> Unauthorized: WebAppService::logout()
+
+@enduml

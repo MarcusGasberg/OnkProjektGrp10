@@ -1,0 +1,65 @@
+@startuml Deployment
+title Deployment Diagram
+skinparam monochrome true
+left to right direction
+
+actor User
+
+node GoogleKubernetes <<Device>>{
+
+    node AccountService <<Device>> {
+        node AccountApi <<Execution Environment>>{
+            artifact AccountApi.dll
+            database UserDb
+        }
+    }
+
+    node BankService <<Device>>{
+        node BankApi <<Execution Environment>>{
+            artifact BankApi.dll
+            database BankDb
+        }
+    }
+
+    node TaxingService <<Device>> {
+        node TaxingApi <<Execution Environment>>{
+            artifact TaxingApi.dll
+        }
+    }
+
+    node PaymentService <<Device>>{
+        node PaymentApi <<Execution Environment>>{
+            artifact PaymentApi.dll
+        }
+    }
+
+    node StockMarketService <<Device>>{
+        node StockMarketApi <<Execution Environment>>{
+            artifact StockMarketApi.dll
+            database StockMarketDb
+        }
+    }
+
+    node WebAppService <<Device>>{
+        node NginxServer <<Execution Environment>>{
+            artifact WebApp.js
+            artifact index.html
+        }
+    }
+}
+() WebApp
+
+AccountService -- BankService
+AccountService -- StockMarketService
+
+TaxingService -- PaymentService
+StockMarketService -- PaymentService
+BankService -- PaymentService
+
+BankService -- WebAppService
+StockMarketService -- WebAppService
+AccountService -- WebAppService
+WebAppService -- WebApp
+
+User -( WebApp
+@enduml
