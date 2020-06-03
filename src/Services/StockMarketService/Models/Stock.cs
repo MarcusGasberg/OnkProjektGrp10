@@ -8,6 +8,7 @@ using StockMarketService.Models;
 
 public class Stock
 {
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public string Id { get; set; }
     public string Name { get; set; }
     public ICollection<StockPrice> HistoricPrice { get; set; }

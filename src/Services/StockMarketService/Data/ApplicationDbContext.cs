@@ -6,15 +6,12 @@ namespace StockMarketService
     public class ApplicationDbContext : DbContext
     {
         public DbSet<Stock> Stocks { get; set; }
-
-        /*protected override void OnConfiguring(DbContextOptionsBuilder options)
-        {
-            options.UseSqlServer("Server=stock-db, 1433;Database=StockDb;User=sa;Password=Passw0rd");
-        }*/
         
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
+        
+        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

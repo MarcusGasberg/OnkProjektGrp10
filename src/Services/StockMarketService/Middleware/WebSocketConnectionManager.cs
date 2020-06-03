@@ -20,6 +20,7 @@ namespace StockMarketService.Middleware {
 
         public string AddSocket(WebSocket socket) {
             var id = Guid.NewGuid().ToString();
+            Console.WriteLine("Adding");
             _sockets.TryAdd(id, socket);
             return id;
         }
@@ -28,24 +29,33 @@ namespace StockMarketService.Middleware {
             GetAllSockets().TryGetValue(wsId, out WebSocket socket);
             var msg = new WsMessage() {
                 data = data,
-                topic = "stocks"
+                topic = topic
             };
-            var json = JsonConvert.SerializeObject(msg);
+            var json = JsonConvert.SerializeObject(msg, Formatting.None, new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            });
             var buffer = Encoding.UTF8.GetBytes(json);
             if (socket != null) await socket.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
         }
 
-        public async Task UpdateAllClients(List<Stock> stocks) {
+        public void UpdateAllClients(List<Stock> stocks) {
 
             var msg = new WsMessage() {
                 data = stocks,
                 topic = "stocks"
             };
 
-            var json = JsonSerializer.Serialize(msg);
+            var json = JsonConvert.SerializeObject(msg, Formatting.None, new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            });
             var buffer = Encoding.UTF8.GetBytes(json);
+            
+            
+            Console.WriteLine(json);
             foreach (var keyValue in _sockets) {
-                await keyValue.Value.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
+                keyValue.Value.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
             }
         }
         

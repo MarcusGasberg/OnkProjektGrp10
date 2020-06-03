@@ -10,6 +10,7 @@ namespace StockMarketService.Models
             this.Price = price;
             this.UpdateTime = updateTime;
         }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; }
         public decimal Price { get; set; }
         public DateTime UpdateTime { get; set; }

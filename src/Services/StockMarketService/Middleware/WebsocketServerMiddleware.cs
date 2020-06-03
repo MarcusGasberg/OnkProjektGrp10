@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using StockMarketService.Models;
 
@@ -13,11 +14,11 @@ namespace StockMarketService.Middleware {
     public class WebsocketServerMiddleware {
         private readonly RequestDelegate _next;
         private readonly WebSocketConnectionManager _manager;
-        private Commands commands;
+        private IServiceProvider _serviceProvider;
 
-        public WebsocketServerMiddleware(RequestDelegate next, WebSocketConnectionManager manager, ApplicationDbContext dbContext)
+        public WebsocketServerMiddleware(RequestDelegate next, WebSocketConnectionManager manager, IServiceProvider serviceProvider)
         {
-            this.commands = new Commands(dbContext);
+            _serviceProvider = serviceProvider;
             _next = next;
             _manager = manager;
         }
@@ -25,7 +26,6 @@ namespace StockMarketService.Middleware {
         public async Task InvokeAsync(HttpContext context) {
             if (context.WebSockets.IsWebSocketRequest) {
                 var webSocket = await context.WebSockets.AcceptWebSocketAsync();
-                Console.WriteLine("Connected");
                 await HandleWebsocketMessage(webSocket, async (result, buffer) => {
                     switch (result.MessageType) {
                         case WebSocketMessageType.Text:
@@ -53,7 +53,16 @@ namespace StockMarketService.Middleware {
             WsMessage msg = JsonConvert.DeserializeObject<WsMessage>(parse);
             if (msg.topic == "stocks" && msg.action == "subscribe") {
                 var id = _manager.AddSocket(webSocket);
-                await _manager.SendMessage(id, msg.topic, commands.GetStocks());
+                _manager.SendMessage(id, msg.topic, "Subscribed");
+
+                // using (var scope = _serviceProvider.CreateScope())
+                // {
+                //     var commands = scope.ServiceProvider.GetService<Commands>();
+                //     
+                //     await _manager.SendMessage(id, msg.topic, commands.GetStocks());
+                //
+                // }
+
             }
         }
 

@@ -15,12 +15,19 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using StockMarketService.Middleware;
+using IdentityServer4.AccessTokenValidation;
+using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace StockMarketService {
     public class Startup {
-        public Startup(IConfiguration configuration) {
+        private IHostingEnvironment env;
+
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
+        {
             Configuration = configuration;
+            this.env = env;
         }
+        
 
         public IConfiguration Configuration { get; }
 
@@ -46,17 +53,40 @@ namespace StockMarketService {
                 .AddNewtonsoftJson(options =>
                     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
                 );
+
+            services.AddScoped<Commands>();
             
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
 
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(connectionString));
+            if (env.IsDevelopment())
+            {
+                services.AddDbContext<ApplicationDbContext>(options =>
+                    options.UseSqlite("Data Source=stocks.db"));
+            }
+            else
+            {
+                services.AddDbContext<ApplicationDbContext>(options =>
+                    options.UseSqlServer(connectionString));
+                
+                services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+                    .AddIdentityServerAuthentication(options =>
+                    {
+                        options.Authority = Configuration["Authority"];
+                        options.RequireHttpsMetadata = false;
+                        options.ApiName = Configuration["ApiName"];
+                        options.ApiSecret = Configuration["ApiSecret"];
+                    });
+            }
         }
 
         
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseAuthentication();
             }
 
             app.UseWebSockets();
@@ -71,12 +101,16 @@ namespace StockMarketService {
 
             app.UseAuthorization();
             
+            
+            
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
-            
+
             using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
-                scope.ServiceProvider.GetService<ApplicationDbContext>().Database.Migrate();
+                var db = scope.ServiceProvider.GetService<ApplicationDbContext>();
+                db.Database.Migrate();
+                Seeddb.run(db);
             }
         }
     }

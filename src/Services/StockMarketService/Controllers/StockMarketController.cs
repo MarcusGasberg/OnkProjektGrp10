@@ -18,11 +18,11 @@ namespace StockMarketService
         private readonly WebSocketConnectionManager _manager;
         private Commands commands;
 
-        public StockMarketController(ILogger<StockMarketController> logger, WebSocketConnectionManager connectionManager, ApplicationDbContext dbContext)
+        public StockMarketController(ILogger<StockMarketController> logger, WebSocketConnectionManager connectionManager, Commands commands)
         {
             _logger = logger;
             _manager = connectionManager;
-            commands = new Commands(dbContext);
+            this.commands = commands;
         }
 
         [HttpGet]
@@ -38,13 +38,15 @@ namespace StockMarketService
         }
         
         [HttpPost]
-        public void AddStock([FromBody] Stock stock) {
-            commands.AddNewStock(stock, _manager);
+        public ActionResult AddStock([FromBody] Stock stock) {
+            commands.AddNewStock(stock);
+            return StatusCode(200);
         }
         
         [HttpPut]
-        private void PutStock(Stock stock) {
-            commands.UpdateStock(stock, _manager);
+        private ActionResult PutStock(Stock stock) {
+            commands.UpdateStock(stock);
+            return StatusCode(200);
         }
 
     }

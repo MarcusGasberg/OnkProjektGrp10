@@ -14,25 +14,32 @@ namespace StockMarketService
     public class Commands
     {
         private ApplicationDbContext context;
+        private WebSocketConnectionManager manager;
 
-        public Commands(ApplicationDbContext context)
+        public Commands(ApplicationDbContext context, WebSocketConnectionManager manager)
         {
             this.context = context;
+            this.manager = manager;
         }
-        public void AddNewStock(Stock stock, WebSocketConnectionManager manager) {
+        public void AddNewStock(Stock stock) {
             Console.WriteLine(JsonSerializer.Serialize(stock));
             context.Stocks.Add(stock);
             context.SaveChanges();
-            var updateTask = new Thread(async () => await manager.UpdateAllClients(GetStocks()));
-            updateTask.Start();
+
+            var allStocks = GetStocks();
+
+            
+            
+            manager.UpdateAllClients(allStocks);
+            //updateTask.Start();
         }
 
-        public void UpdateStockPrice(string stockName,decimal newStockPrice, WebSocketConnectionManager manager) {
+        public void UpdateStockPrice(string stockName,decimal newStockPrice) {
             var stock = context.Stocks.Find(stockName);
             stock.HistoricPrice.Add(new StockPrice(newStockPrice, DateTime.Now));
             context.Stocks.Update(stock);
-            var updateTask = new Thread(async () => await manager.UpdateAllClients(GetStocks()));
-            updateTask.Start();
+            //var updateTask = new Thread(async () => await manager.UpdateAllClients(GetStocks()));
+            //updateTask.Start();
         }
 
         public List<Stock> GetStocks() {
@@ -43,12 +50,12 @@ namespace StockMarketService
             return context.Stocks.Include(s => s.HistoricPrice).Include(s => s.Seller).FirstOrDefault(s => s.Name == name);
         }
         
-        public void UpdateStock(Stock stock, WebSocketConnectionManager manager) {
+        public void UpdateStock(Stock stock) {
             Console.WriteLine(JsonSerializer.Serialize(stock));
             context.Stocks.Update(stock);
             context.SaveChanges();
-            var updateTask = new Thread(async () => await manager.UpdateAllClients(GetStocks()));
-            updateTask.Start();
+            //var updateTask = new Thread(async () => await manager.UpdateAllClients(GetStocks()));
+            //updateTask.Start();
         }
         
         public Seller GetSeller(string name, int number) {

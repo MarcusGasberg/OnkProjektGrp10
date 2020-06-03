@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using StockMarketService.Models;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace StockMarketService {
     
@@ -17,9 +18,9 @@ namespace StockMarketService {
     [Route("[controller]")]
     public class StockBrokerController : Controller {
 
-        public StockBrokerController(ApplicationDbContext dbContext)
+        public StockBrokerController(Commands commands)
         {
-            commands = new Commands(dbContext);
+            this.commands = commands;
         }
 
         private Commands commands;
