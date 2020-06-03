@@ -1,4 +1,4 @@
-@startuml Component
+@startuml Auth Class Diagram
 title Auth Class Diagram
 skinparam monochrome true
 
