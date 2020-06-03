@@ -20,9 +20,9 @@ spec:
           imagePullPolicy: Always
           name: bank
           ports:
-            - containerPort: 80
+            - containerPort: 5004
           resources: {}
       restartPolicy: Always
-      serviceAccountName: ''
+      serviceAccountName: ""
       volumes: null
 status: {}

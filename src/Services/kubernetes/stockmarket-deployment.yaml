@@ -20,9 +20,9 @@ spec:
           imagePullPolicy: Always
           name: stockmarket
           ports:
-            - containerPort: 80
+            - containerPort: 5001
           resources: {}
       restartPolicy: Always
-      serviceAccountName: ''
+      serviceAccountName: ""
       volumes: null
 status: {}

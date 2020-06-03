@@ -6,9 +6,9 @@ metadata:
   name: bank
 spec:
   ports:
-    - name: '5004'
+    - name: "5004"
       port: 5004
-      targetPort: 80
+      targetPort: 5004
   selector:
     app: bank
 status:
