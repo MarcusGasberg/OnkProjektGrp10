@@ -4,50 +4,76 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using StockMarketService.Middleware;
 using StockMarketService.Models;
 
 namespace StockMarketService
 {
-    public static class Commands
+    public class Commands
     {
-        public static void AddNewStock(Stock stock, WebSocketConnectionManager manager) {
-            using var db = new ApplicationDbContext();
+        private ApplicationDbContext context;
+
+        public Commands(ApplicationDbContext context)
+        {
+            this.context = context;
+        }
+        public void AddNewStock(Stock stock, WebSocketConnectionManager manager) {
             Console.WriteLine(JsonSerializer.Serialize(stock));
-            db.Stocks.Add(stock);
-            db.SaveChanges();
-            var updateTask = new Thread(async () => await manager.UpdateAllClients(JsonSerializer.Serialize(GetStocks())));
+            context.Stocks.Add(stock);
+            context.SaveChanges();
+            var updateTask = new Thread(async () => await manager.UpdateAllClients(GetStocks()));
             updateTask.Start();
         }
 
-        public static void UpdateStockPrice(string stockName,decimal newStockPrice, WebSocketConnectionManager manager) {
-            using var db = new ApplicationDbContext();
-            var stock = db.Stocks.Find(stockName);
+        public void UpdateStockPrice(string stockName,decimal newStockPrice, WebSocketConnectionManager manager) {
+            var stock = context.Stocks.Find(stockName);
             stock.HistoricPrice.Add(new StockPrice(newStockPrice, DateTime.Now));
-            db.Stocks.Update(stock);
-            var updateTask = new Thread(async () => await manager.UpdateAllClients(JsonSerializer.Serialize(GetStocks())));
+            context.Stocks.Update(stock);
+            var updateTask = new Thread(async () => await manager.UpdateAllClients(GetStocks()));
             updateTask.Start();
         }
 
-        public static List<Stock> GetStocks() {
-            using var db = new ApplicationDbContext();
-            return db.Stocks.ToList();
+        public List<Stock> GetStocks() {
+            return context.Stocks.Include(s => s.HistoricPrice).Include(s => s.Seller).ToList();
         }
         
-        public static Stock GetStock(string name) {
-            using var db = new ApplicationDbContext();
-            return db.Stocks.Find(name);
+        public Stock GetStock(string name) {
+            return context.Stocks.Include(s => s.HistoricPrice).Include(s => s.Seller).FirstOrDefault(s => s.Name == name);
         }
         
-        public static void UpdateStock(Stock stock, WebSocketConnectionManager manager) {
-            using var db = new ApplicationDbContext();
+        public void UpdateStock(Stock stock, WebSocketConnectionManager manager) {
             Console.WriteLine(JsonSerializer.Serialize(stock));
-            db.Stocks.Update(stock);
-            db.SaveChanges();
-            var updateTask = new Thread(async () => await manager.UpdateAllClients(JsonSerializer.Serialize(GetStocks())));
+            context.Stocks.Update(stock);
+            context.SaveChanges();
+            var updateTask = new Thread(async () => await manager.UpdateAllClients(GetStocks()));
             updateTask.Start();
         }
         
+        public Seller GetSeller(string name, int number) {
+            Stock stock = GetStock(name);
+            Seller seller = stock.Seller.FirstOrDefault(s => s.SellingAmount >= number);
+            if (seller == null ) {
+                return null;
+            }
+            return seller;
+        }
+
+        public bool SellStock(string name, int number) {
+            Stock stock = GetStock(name);
+            Seller seller = stock.Seller.FirstOrDefault(s => s.SellingAmount >= number);
+            if (seller == null ) {
+                return false;
+            }
+
+            stock.Seller.Remove(seller);
+            seller.SellingAmount = seller.SellingAmount - number;
+            stock.Seller.Add(seller);
+            context.Stocks.Update(stock);
+            context.SaveChanges();
+            return true;
+        }
+
     }
 }

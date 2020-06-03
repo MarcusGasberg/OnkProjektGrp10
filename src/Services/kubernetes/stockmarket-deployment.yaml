@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: stockmarket
+  name: stockmarket
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stockmarket
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: stockmarket
+    spec:
+      containers:
+        - image: brunton/stockmarket
+          imagePullPolicy: Always
+          name: stockmarket
+          ports:
+            - containerPort: 80
+          resources: {}
+      restartPolicy: Always
+      serviceAccountName: ''
+      volumes: null
+status: {}

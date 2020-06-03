@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: stockmarket
+  name: stockmarket
+spec:
+  ports:
+    - name: '5010'
+      port: 5010
+      targetPort: 80
+  selector:
+    app: stockmarket
+status:
+  loadBalancer: {}

@@ -16,33 +16,36 @@ namespace StockMarketService
     {
         private readonly ILogger<StockMarketController> _logger;
         private readonly WebSocketConnectionManager _manager;
+        private Commands commands;
 
-        public StockMarketController(ILogger<StockMarketController> logger, WebSocketConnectionManager connectionManager)
+        public StockMarketController(ILogger<StockMarketController> logger, WebSocketConnectionManager connectionManager, ApplicationDbContext dbContext)
         {
             _logger = logger;
             _manager = connectionManager;
+            commands = new Commands(dbContext);
         }
 
         [HttpGet]
         public List<Stock> Get() {
-            return Commands.GetStocks();
+            return commands.GetStocks();
         }
         
         [HttpGet]
         [Route("{stockname}")]
         public Stock GetStock(string stockname) {
             stockname = stockname.Replace("_", " ");
-            return Commands.GetStock(stockname);
+            return commands.GetStock(stockname);
         }
         
         [HttpPost]
         public void AddStock([FromBody] Stock stock) {
-            Commands.AddNewStock(stock, _manager);
+            commands.AddNewStock(stock, _manager);
         }
         
         [HttpPut]
         private void PutStock(Stock stock) {
-            Commands.UpdateStock(stock, _manager);
+            commands.UpdateStock(stock, _manager);
         }
+
     }
 }

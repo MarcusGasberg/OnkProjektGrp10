@@ -2,16 +2,22 @@ using System;
 using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
+using StockMarketService.Models;
 
 namespace StockMarketService.Middleware {
     public class WebsocketServerMiddleware {
         private readonly RequestDelegate _next;
         private readonly WebSocketConnectionManager _manager;
+        private Commands commands;
 
-        public WebsocketServerMiddleware(RequestDelegate next, WebSocketConnectionManager manager) {
+        public WebsocketServerMiddleware(RequestDelegate next, WebSocketConnectionManager manager, ApplicationDbContext dbContext)
+        {
+            this.commands = new Commands(dbContext);
             _next = next;
             _manager = manager;
         }
@@ -20,11 +26,10 @@ namespace StockMarketService.Middleware {
             if (context.WebSockets.IsWebSocketRequest) {
                 var webSocket = await context.WebSockets.AcceptWebSocketAsync();
                 Console.WriteLine("Connected");
-                _manager.AddSocket(webSocket);
                 await HandleWebsocketMessage(webSocket, async (result, buffer) => {
                     switch (result.MessageType) {
                         case WebSocketMessageType.Text:
-                            Console.WriteLine("Message Received: " + Encoding.UTF8.GetString(buffer, 0, result.Count));
+                            await HandleMessage(webSocket, buffer, result);
                             break;
                         case WebSocketMessageType.Close:
                             await HandleCloseMessage(webSocket, result);
@@ -42,12 +47,22 @@ namespace StockMarketService.Middleware {
             }
         }
 
+        private async Task HandleMessage(WebSocket webSocket, byte[] buffer, WebSocketReceiveResult result) {
+            var parse = Encoding.UTF8.GetString(buffer, 0, result.Count);
+
+            WsMessage msg = JsonConvert.DeserializeObject<WsMessage>(parse);
+            if (msg.topic == "stocks" && msg.action == "subscribe") {
+                var id = _manager.AddSocket(webSocket);
+                await _manager.SendMessage(id, msg.topic, commands.GetStocks());
+            }
+        }
+
         private async Task HandleCloseMessage(WebSocket webSocket, WebSocketReceiveResult result) {
-            var id = _manager.GetAllSockets().FirstOrDefault(socket => socket.Value == webSocket).Key;
-            _manager.GetAllSockets().TryRemove(id, out var socket);
-            if (result.CloseStatus != null)
+            var socket = await _manager.RemoveSocket(webSocket, result);
+            if (result.CloseStatus != null) {
                 await socket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription,
                     CancellationToken.None);
+            }
         }
 
         private async Task HandleWebsocketMessage(WebSocket webSocket, Action<WebSocketReceiveResult, byte[]> handle) {

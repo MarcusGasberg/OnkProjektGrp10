@@ -8,10 +8,12 @@ export const environment = {
   clientId: 'angularDebugClient',
   redirectUri: window.location.origin,
   responseType: 'id_token token',
-  scope: 'openid profile api1 taxingController paymentController stockMarketController bankController',
+  scope:
+    'openid profile api1 taxingController paymentController stockMarketController bankController',
   taxingControllerUrl: '',
   paymentControllerUrl: '',
   stockMarketController: '',
+  websocketUrl: 'ws://localhost:5000',
   bankUrl: 'http://localhost:5004',
   testApiUrl: 'http://localhost:5004',
 };

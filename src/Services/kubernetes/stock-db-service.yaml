@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: stock-db
+  name: stock-db
+spec:
+  ports:
+    - name: '1435'
+      port: 1435
+      targetPort: 1433
+  selector:
+    app: stock-db
+status:
+  loadBalancer: {}
