@@ -54,7 +54,7 @@ namespace PaymentApi.Controllers
 
             //call charge requester
         var paymentdata = new {
-            Price = body.Price,
+            Price = taxResponse.Price,
             BuyerId = body.BuyerID,
             SellerId = body.SellerId };
 
