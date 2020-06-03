@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
   authority: `${window.location.origin}/account-api`,
-  clientId: 'angularDockerClient',
+  clientId: 'angularClient',
   redirectUri: window.location.origin,
   responseType: 'id_token token',
   scope:
@@ -9,7 +9,7 @@ export const environment = {
   taxingControllerUrl: '',
   paymentControllerUrl: '',
   stockMarketController: '',
-  websocketUrl: 'ws://192.168.99.100:5000',
+  websocketUrl: 'ws://stockmarket:5000',
   bankUrl: `${window.location.origin}/bank-api`,
   testApiUrl: `${window.location.origin}/bank-api`,
 };
