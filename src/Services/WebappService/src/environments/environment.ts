@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  authority: `${window.location.origin}/account-service`,
+  authority: `http://localhost:5000`,
   clientId: 'angularDebugClient',
   redirectUri: window.location.origin,
   responseType: 'id_token token',
