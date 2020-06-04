@@ -118,7 +118,7 @@ namespace AccountService
                 {
                     ClientId = "angularClient",
                     ClientName = "Angular Client",
-                    ClientUri = "http://web-app:4200",
+                    ClientUri = "http://web-app.stocks",
 
                     AllowedGrantTypes = GrantTypes.Implicit,
 
@@ -128,12 +128,12 @@ namespace AccountService
 
                     RedirectUris =
                     {
-                        "http://web-app:4200",
-                        "http://web-app:4200/callback",
+                        "http://web-app.stocks",
+                        "http://web-app.stocks/callback",
                     },
 
-                    PostLogoutRedirectUris = { "http://web-app:4200" },
-                    AllowedCorsOrigins = { "http://web-app:4200" },
+                    PostLogoutRedirectUris = { "http://web-app.stocks" },
+                    AllowedCorsOrigins = { "http://web-app.stocks" },
 
                     AllowAccessTokensViaBrowser = true,
                     AccessTokenLifetime = 3600,
