@@ -6,17 +6,24 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "PUT, GET, POST, OPTIONS, DELETE"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "*"
     kubernetes.io/ingress.class: "nginx"
 spec:
   rules:
-    - host: stock-web-app.com
+    - host: web-app.stocks
       http:
         paths:
-          - backend:
+          - path: /
+            backend:
               serviceName: web-app
               servicePort: 80
-            path: /
-          - backend:
+    - host: identity-server.stocks
+      http:
+        paths:
+          - path: /
+            backend:
               serviceName: account
-              servicePort: 5000
-            path: /account-api/
+              servicePort: 80
