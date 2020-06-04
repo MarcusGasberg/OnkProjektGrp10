@@ -16,13 +16,17 @@ spec:
         app: account
     spec:
       containers:
-        - image: brunton/account
-          imagePullPolicy: Always
+        - image: account
+          imagePullPolicy: Never
           name: account
           ports:
             - containerPort: 80
           resources: {}
+      hostAliases:
+        - ip: "192.168.99.100" #Minikube ip
+          hostnames:
+            - "stock-web-app.com"
       restartPolicy: Always
-      serviceAccountName: ''
+      serviceAccountName: ""
       volumes: null
 status: {}

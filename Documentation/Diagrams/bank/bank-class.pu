@@ -1,0 +1,50 @@
+@startuml Bank Class Diagram
+title Bank Class Diagram
+skinparam monochrome true
+
+package BankService{
+    class AuthController {
+        IsAuthorized()
+    }
+
+    class RegistrationController {
+        + Register(registrationDto)
+    }
+    
+    class TransactionController {
+        - MoveCash(sender, receiver)
+        - RegisterTransaction(transaction)
+        + PostTransaction(transactionDto)
+    }
+
+    class BankDb {
+        + Create(bankAccount)
+        + Get(): BankAccount
+    }
+
+    class RegistrationDto {
+        +string UserId
+        +string RegistrationNumber
+    }
+
+    class TransactionDto {
+        +string SenderId
+        +string ReceiverId
+        +int Amount
+    }
+
+    class BankAccount {
+        +string Id = UserId
+        +string RegistrationNumber
+    }
+
+    RegistrationController --> RegistrationDto
+    TransactionController --> TransactionDto
+    TransactionController --> BankDb
+    RegistrationController --> BankDb
+    BankDb --> BankAccount
+    RegistrationController --> AuthController
+    TransactionController --> AuthController
+}
+
+@enduml

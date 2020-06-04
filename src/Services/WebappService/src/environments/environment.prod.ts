@@ -1,11 +1,11 @@
 export const environment = {
   production: true,
-  authority: `${window.location.origin}/account-api`,
+  authority: `http://identity-server.stocks`,
   clientId: 'angularClient',
   redirectUri: window.location.origin,
   responseType: 'id_token token',
   scope:
-    'openid profile taxingController paymentController stockMarketController api1 bankController',
+    'openid profile taxingController paymentController stockMarketController bankController',
   taxingControllerUrl: '',
   paymentControllerUrl: '',
   stockMarketController: '',

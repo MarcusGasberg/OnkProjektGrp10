@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Hosting;
 
 namespace AccountService
@@ -78,6 +79,11 @@ namespace AccountService
             builder.AddDeveloperSigningCredential();
 
             services.AddAuthentication();
+
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            });
         }
 
         public void Configure(IApplicationBuilder app)
@@ -87,6 +93,14 @@ namespace AccountService
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
             }
+
+            app.UseForwardedHeaders();
+
+            app.Use((context, next) =>
+            {
+                context.Request.Scheme = "https";
+                return next();
+            });
 
             app.UseStaticFiles();
 

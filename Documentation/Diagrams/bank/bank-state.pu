@@ -1,0 +1,24 @@
+@startuml Bank State Diagram
+title Bank State Diagram
+skinparam monochrome true
+
+state register_choice <<choice>>
+
+[*] --> Unregistered
+
+Unregistered --> register_choice: Register(registrationDto)
+register_choice --> Unregistered: [IsAuthorized() == false]
+register_choice --> Registered: CreateBankAccount(registrationDto)[IsAuthorized() == true]
+
+state Registered {
+    state transaction_choice <<choice>>
+    [*] --> PostTransaction
+    PostTransaction --> transaction_choice : MoveCash(sender, receiver)
+    transaction_choice --> TransactionComplete: [Success == true]
+    TransactionComplete --> [*]: RegisterTransaction(transaction)
+
+    transaction_choice --> TransactionFailed: [Success == false]
+    TransactionFailed --> [*]: HandleError(transaction)
+}
+
+@enduml

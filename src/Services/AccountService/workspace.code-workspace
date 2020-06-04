@@ -13,7 +13,10 @@
       "path": "..\\AuthTestApi"
     },
     {
-      "path": "..\\..\\.."
+      "path": "..\\kubernetes"
+    },
+    {
+      "path": "..\\spa-demo"
     }
   ],
   "settings": {}
