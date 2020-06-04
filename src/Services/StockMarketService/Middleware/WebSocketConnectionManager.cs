@@ -43,7 +43,8 @@ namespace StockMarketService.Middleware {
 
             var msg = new WsMessage() {
                 data = stocks,
-                topic = "stocks"
+                topic = "stocks",
+                action = "update"
             };
 
             var json = JsonConvert.SerializeObject(msg, Formatting.None, new JsonSerializerSettings

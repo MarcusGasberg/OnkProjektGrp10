@@ -13,7 +13,7 @@ export const environment = {
   taxingControllerUrl: '',
   paymentControllerUrl: '',
   stockMarketController: '',
-  websocketUrl: 'ws://localhost:5000',
+  websocketUrl: 'ws://localhost:5010',
   bankUrl: 'http://localhost:5004',
   testApiUrl: 'http://localhost:5004',
 };

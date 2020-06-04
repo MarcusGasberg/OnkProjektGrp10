@@ -1,9 +1,9 @@
-@import "./../../styles.scss";
+@import './../../styles.scss';
 
 div {
   display: flex;
   padding: 0;
-  background-image: url("../../assets/background.svg");
+  background-image: url('../../assets/background.svg');
   height: calc(100% - 64px);
   justify-content: space-around;
   p {
@@ -21,7 +21,7 @@ div {
     background-color: $action-color;
     border: none;
     padding: 10px;
-    font-family: "Nunito";
+    font-family: 'Nunito';
   }
 
   .left-container {
@@ -67,14 +67,15 @@ div {
     flex-direction: column;
     align-self: center;
     justify-content: flex-start;
-    max-width: 400px;
+    width: 400px;
     height: 600px;
     flex: 3;
     background-color: $white-color !important;
     margin-right: 130px;
     margin-left: 80px;
-    app-stock-list-item {
+    app-stocklist {
       height: 50px;
+      width: 400px;
     }
   }
 }
