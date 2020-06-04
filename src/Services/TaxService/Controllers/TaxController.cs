@@ -25,7 +25,7 @@ namespace TaxApi.Controllers
         }
 
         public Tax taxCalculation(Tax requestTax){
-            return new Tax(requestTax.Amount/100, requestTax.Id);
+            return new Tax(requestTax.Amount - requestTax.Amount/100, requestTax.Id);
         }
 
 

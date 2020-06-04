@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace PaymentApi.Controllers
 {
@@ -19,10 +20,9 @@ namespace PaymentApi.Controllers
 
     [ApiController]
     [Route("[controller]")]
-    public class PaymentController : ControllerBase
-    {
-
+    public class PaymentController : ControllerBase{
         private HttpClient _client = new HttpClient();
+
 
         private readonly ILogger<PaymentController> _logger;
 
@@ -35,24 +35,30 @@ namespace PaymentApi.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> PostPayment(RequestBody body)
-        {
+        public async Task<IActionResult> PostPayment(RequestBody body) {
+            
+        var accessToken = await HttpContext.GetTokenAsync("access_token");
 
-            //create HttpContent body
-
-            var contentTax = new Tax(body.Price, body.BuyerID);
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        
+        var taxdata = new {
+            Price = body.Price,
+            BuyerID = body.BuyerID
+            };
             
             //get tax
 
-            var taxResponse = await _client.PostAsync(requestUri: "https://localhost:5003", contentTax);
-            
-            taxResponse.EnsureSuccessStatusCode();
+        var taxResponse = await _client.PostAsync(requestUri: "https://localhost:5003", new StringContent(JsonSerializer.Serialize(taxdata)));
+
+        taxResponse.EnsureSuccessStatusCode();
 
             //call charge requester
+        var paymentdata = new {
+            Price = taxResponse.Price,
+            BuyerId = body.BuyerID,
+            SellerId = body.SellerId };
 
-            var payment = new PaymentDTO(body.Price,body.BuyerID,body.SellerId );
-
-            var chargeResponse = await _client.PostAsync("http://localhost:5004/payment",payment);
+            var chargeResponse = await _client.PostAsync("http://localhost:5004/payment",new StringContent(JsonSerializer.Serialize(paymentdata)));
 
             chargeResponse.EnsureSuccessStatusCode();
 
@@ -61,12 +67,7 @@ namespace PaymentApi.Controllers
         }
     }
 
-    //https://stackoverflow.com/questions/20493197/posting-a-custom-type-with-httpclient
-    public class RequestBody : HttpContent
-    {
-
-        private readonly MemoryStream _Stream = new MemoryStream();
-
+    public class RequestBody{
         public int Price { get; set; }
 
         public string StockName { get; set; }
@@ -74,26 +75,9 @@ namespace PaymentApi.Controllers
         public string SellerId { get; set; }
 
         public string BuyerID { get; set; }
-
-        protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
-        {
-            _Stream.CopyTo(stream);
-            var tcs = new TaskCompletionSource<object>();
-            tcs.SetResult(null);
-            return tcs.Task;
-        }
-
-        protected override bool TryComputeLength(out long length)
-        {
-            length = _Stream.Length;
-            return true;
-        }
     }
-    public class Tax : HttpContent
-    {
 
-        private readonly MemoryStream _Stream = new MemoryStream();
-
+    public class Tax{
         public int Amount { set; get; }
         public string Id { set; get; }
 
@@ -102,24 +86,10 @@ namespace PaymentApi.Controllers
             Amount = amount;
             Id = id;
         }
-        protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
-        {
-            _Stream.CopyTo(stream);
-            var tcs = new TaskCompletionSource<object>();
-            tcs.SetResult(null);
-            return tcs.Task;
-        }
-
-        protected override bool TryComputeLength(out long length)
-        {
-            length = _Stream.Length;
-            return true;
-        }
+    
     }
 
-    public class PaymentDTO : HttpContent
-    {
-        private readonly MemoryStream _Stream = new MemoryStream();
+    public class PaymentDTO{
 
         public int Amount { get; set; }
 
@@ -132,19 +102,6 @@ namespace PaymentApi.Controllers
             this.Amount = Amount;
             this.ReceiverId = ReceiverId;
             this.SenderId = SenderId;
-        }
-        protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
-        {
-            _Stream.CopyTo(stream);
-            var tcs = new TaskCompletionSource<object>();
-            tcs.SetResult(null);
-            return tcs.Task;
-        }
-
-        protected override bool TryComputeLength(out long length)
-        {
-            length = _Stream.Length;
-            return true;
         }
     }
 
