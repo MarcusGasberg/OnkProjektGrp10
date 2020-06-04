@@ -53,16 +53,7 @@ namespace StockMarketService.Middleware {
             WsMessage msg = JsonConvert.DeserializeObject<WsMessage>(parse);
             if (msg.topic == "stocks" && msg.action == "subscribe") {
                 var id = _manager.AddSocket(webSocket);
-                _manager.SendMessage(id, msg.topic, "Subscribed");
-
-                // using (var scope = _serviceProvider.CreateScope())
-                // {
-                //     var commands = scope.ServiceProvider.GetService<Commands>();
-                //     
-                //     await _manager.SendMessage(id, msg.topic, commands.GetStocks());
-                //
-                // }
-
+                _manager.SendMessage(id, msg.topic, "connect", "Subscribed");
             }
         }
 

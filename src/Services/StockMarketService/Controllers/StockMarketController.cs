@@ -43,6 +43,13 @@ namespace StockMarketService
             return StatusCode(200);
         }
         
+        [HttpPost]
+        [Route("{update}")]
+        public ActionResult UpdateClients() {
+            commands.UpdateClients();
+            return StatusCode(200);
+        }
+        
         [HttpPut]
         private ActionResult PutStock(Stock stock) {
             commands.UpdateStock(stock);

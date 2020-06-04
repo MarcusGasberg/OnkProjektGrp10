@@ -25,11 +25,12 @@ namespace StockMarketService.Middleware {
             return id;
         }
 
-        public async Task SendMessage(string wsId, string topic, object data) {
+        public async Task SendMessage(string wsId, string topic, string action, object data) {
             GetAllSockets().TryGetValue(wsId, out WebSocket socket);
             var msg = new WsMessage() {
                 data = data,
-                topic = topic
+                topic = topic,
+                action = action
             };
             var json = JsonConvert.SerializeObject(msg, Formatting.None, new JsonSerializerSettings
             {

@@ -25,21 +25,22 @@ namespace StockMarketService
             Console.WriteLine(JsonSerializer.Serialize(stock));
             context.Stocks.Add(stock);
             context.SaveChanges();
+            
+            UpdateClients();
+            
+        }
 
+        public void UpdateClients()
+        {
             var allStocks = GetStocks();
-
-            
-            
             manager.UpdateAllClients(allStocks);
-            //updateTask.Start();
         }
 
         public void UpdateStockPrice(string stockName,decimal newStockPrice) {
             var stock = context.Stocks.Find(stockName);
             stock.HistoricPrice.Add(new StockPrice(newStockPrice, DateTime.Now));
             context.Stocks.Update(stock);
-            //var updateTask = new Thread(async () => await manager.UpdateAllClients(GetStocks()));
-            //updateTask.Start();
+            UpdateClients();
         }
 
         public List<Stock> GetStocks() {
@@ -54,8 +55,7 @@ namespace StockMarketService
             Console.WriteLine(JsonSerializer.Serialize(stock));
             context.Stocks.Update(stock);
             context.SaveChanges();
-            //var updateTask = new Thread(async () => await manager.UpdateAllClients(GetStocks()));
-            //updateTask.Start();
+            UpdateClients();
         }
         
         public Seller GetSeller(string name, int number) {

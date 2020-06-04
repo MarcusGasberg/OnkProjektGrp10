@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { WebSocketService } from './web-socket.service';
 import { Stock } from './models/stock';
+import * as axios from 'axios';
 
 @Injectable({
   providedIn: 'root',
@@ -25,6 +26,7 @@ export class StockService {
         });
         console.log(this.stocklist);
       }
+      axios.default.post('http://localhost:5010/stockmarket/update');
     });
   }
 }
