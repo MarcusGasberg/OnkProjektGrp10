@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading.Tasks;
+using IdentityModel;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using StockMarketService.Models;
@@ -27,11 +28,12 @@ namespace StockMarketService {
 
 
         [HttpPost]
-        [Route("SellStock")]
+        [Route("Purchase")]
         public async Task<StatusCodeResult> SellStock([FromBody] TradeRequest request) {
             if (commands.GetSeller(request.StockName, request.Number) != null) {
                 var stock = commands.GetStock(request.StockName);
                 var seller = commands.GetSeller(request.StockName, request.Number);
+                var buyerId = User.Claims.FirstOrDefault(c => c.Type.Equals(JwtClaimTypes.Subject))?.Value;
                 var accessToken = await HttpContext.GetTokenAsync("access_token");
                 var client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
@@ -39,10 +41,11 @@ namespace StockMarketService {
                 var data = new {
                     Price = stock.HistoricPrice.FirstOrDefault().Price,
                     StockName = stock.Name,
-                    SellerId = seller.SellerId
+                    SellerId = seller.SellerId ,
+                    BuyerId = buyerId
                 };
 
-                var res = await client.PostAsync("Some address", new StringContent(JsonSerializer.Serialize(data)));
+                var res = await client.PostAsync("payment/payment", new StringContent(JsonSerializer.Serialize(data)));
 
                 if (res.StatusCode != HttpStatusCode.OK || !commands.SellStock(request.StockName, request.Number)) return StatusCode(403);
                 

@@ -9,8 +9,8 @@ using StockMarketService;
 namespace StockMarketService.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200603134424_int")]
-    partial class @int
+    [Migration("20200604183431_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

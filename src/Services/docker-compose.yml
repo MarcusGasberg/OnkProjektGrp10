@@ -34,24 +34,24 @@ services:
       - bank-db
     networks:
       - app-network
-            
-  payment:
-    container_name: "payment"
-    build: ./PaymentService
-    restart: on-failure
-    ports:
-      - "5002:80"
-    depends_on:
-      - bank-db
-    networks:
-      - app-network
+
+  # payment:
+  #   container_name: "payment"
+  #   build: ./PaymentService
+  #   restart: on-failure
+  #   ports:
+  #     - "5002:80"
+  #   depends_on:
+  #     - bank-db
+  #   networks:
+  #     - app-network
 
   tax:
-    container_name: "tax"
+    container_name: 'tax'
     build: ./TaxService
     restart: on-failure
     ports:
-      - "5003:80"
+      - '5003:80'
     depends_on:
       - bank-db
     networks:

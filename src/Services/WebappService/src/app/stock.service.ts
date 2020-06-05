@@ -24,9 +24,8 @@ export class StockService {
             value: stock.HistoricPrice[0].Price,
           } as Stock);
         });
-        console.log(this.stocklist);
       }
-      axios.default.post('http://localhost:5010/stockmarket/update');
     });
+    axios.default.post('http://localhost:5010/stockmarket/update');
   }
 }
