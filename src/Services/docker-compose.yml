@@ -48,6 +48,7 @@ services:
 
   tax:
     container_name: 'tax'
+    image: brunton/tax
     build: ./TaxService
     restart: on-failure
     ports:

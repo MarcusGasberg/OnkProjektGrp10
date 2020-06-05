@@ -23,6 +23,6 @@ spec:
             - containerPort: 5003
           resources: {}
       restartPolicy: Always
-      serviceAccountName: ""
+      serviceAccountName: ''
       volumes: null
 status: {}

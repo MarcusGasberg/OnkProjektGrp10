@@ -23,7 +23,8 @@ namespace StockMarketService.Migrations
                 name: "Seller",
                 columns: table => new
                 {
-                    Id = table.Column<string>(nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
                     SellerId = table.Column<string>(nullable: true),
                     SellingAmount = table.Column<int>(nullable: false),
                     StockId = table.Column<string>(nullable: true)

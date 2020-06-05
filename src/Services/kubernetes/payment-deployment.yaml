@@ -1,28 +1,28 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  labels:
-    app: payment
-  name: payment
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: payment
-  strategy: {}
-  template:
-    metadata:
-      labels:
-        app: payment
-    spec:
-      containers:
-        - image: brunton/payment
-          imagePullPolicy: Always
-          name: payment
-          ports:
-            - containerPort: 5002
-          resources: {}
-      restartPolicy: Always
-      serviceAccountName: ""
-      volumes: null
-status: {}
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   labels:
+#     app: payment
+#   name: payment
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: payment
+#   strategy: {}
+#   template:
+#     metadata:
+#       labels:
+#         app: payment
+#     spec:
+#       containers:
+#         - image: brunton/payment
+#           imagePullPolicy: Always
+#           name: payment
+#           ports:
+#             - containerPort: 5002
+#           resources: {}
+#       restartPolicy: Always
+#       serviceAccountName: ''
+#       volumes: null
+# status: {}
