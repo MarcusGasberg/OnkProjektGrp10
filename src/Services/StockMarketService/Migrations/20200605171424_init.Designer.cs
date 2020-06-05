@@ -9,7 +9,7 @@ using StockMarketService;
 namespace StockMarketService.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200605145638_init")]
+    [Migration("20200605171424_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,9 +34,9 @@ namespace StockMarketService.Migrations
 
             modelBuilder.Entity("StockMarketService.Models.Seller", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("SellerId")
                         .HasColumnType("TEXT");

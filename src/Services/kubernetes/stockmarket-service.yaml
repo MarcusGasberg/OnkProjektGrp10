@@ -5,9 +5,10 @@ metadata:
     app: stockmarket
   name: stockmarket
 spec:
+  type: LoadBalancer
   ports:
-    - name: '5010'
-      port: 5010
+    - name: '80'
+      port: 80
       targetPort: 80
   selector:
     app: stockmarket

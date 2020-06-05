@@ -32,9 +32,9 @@ namespace StockMarketService.Migrations
 
             modelBuilder.Entity("StockMarketService.Models.Seller", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("SellerId")
                         .HasColumnType("TEXT");

@@ -16,6 +16,7 @@ export class HomeComponent implements OnInit {
     { change: -2.6, name: 'Stock Six' } as Stock,
   ];
 
+  
   constructor() {}
 
   ngOnInit(): void {}

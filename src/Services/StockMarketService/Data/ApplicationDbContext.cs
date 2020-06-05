@@ -19,7 +19,6 @@ namespace StockMarketService
                 .HasOne<Stock>(s => s.stock)
                 .WithMany(s => s.HistoricPrice);
 
-            modelBuilder.Entity<Stock>();
 
             modelBuilder.Entity<Seller>()
                 .HasOne<Stock>(s => s.Stock)

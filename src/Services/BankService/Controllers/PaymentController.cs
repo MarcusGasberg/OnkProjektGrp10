@@ -17,7 +17,7 @@ using BankService.Models;
 namespace BankService.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("bank[controller]")]
     [Authorize]
     public class PaymentController : ControllerBase
     {

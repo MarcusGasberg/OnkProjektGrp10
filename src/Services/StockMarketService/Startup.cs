@@ -65,8 +65,10 @@ namespace StockMarketService {
             }
             else
             {
+                //services.AddDbContext<ApplicationDbContext>(options =>
+                //    options.UseSqlServer(connectionString));
                 services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlServer(connectionString));
+                    options.UseSqlite("Data Source=stocks.db"));
                 
                 services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                     .AddIdentityServerAuthentication(options =>

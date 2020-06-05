@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { WebSocketService } from './web-socket.service';
 import { Stock } from './models/stock';
 import * as axios from 'axios';
+import { environment } from 'src/environments/environment.prod';
 
 @Injectable({
   providedIn: 'root',
@@ -26,6 +27,6 @@ export class StockService {
         });
       }
     });
-    axios.default.post('http://localhost:5010/stockmarket/update');
+    axios.default.post(`${environment.stockMarketController}/update`);
   }
 }
