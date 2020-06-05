@@ -9,13 +9,19 @@ participant User Controller
 participant Bank
 
 ==List Stock For Sale==
-Web Client->Stock Market Controller:ListStockForSale
+Web Client->Stock Broker:Sell Stock
+activate Stock Broker
+Stock Broker->Stock Market Controller:SellStock(TradeRequest)
+deactivate Stock Broker
 activate Stock Market Controller
 Web Client<--Stock Market Controller:Listing Created
 deactivate Stock Market Controller
 space
 ==Show Available Stocks==
-Web Client->Stock Market Controller:GetStocks() 
+Web Client->Stock Broker:Get Stocks
+activate Stock Broker
+Stock Broker->Stock Market Controller:GetStocks() 
+deactivate Stock Broker
 activate Stock Market Controller
 Stock Market Controller-->Web Client:Stocks[]
 deactivate Stock Market Controller
