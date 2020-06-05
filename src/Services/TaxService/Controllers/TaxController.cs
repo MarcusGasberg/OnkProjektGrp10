@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace TaxApi.Controllers
+namespace TaxService
 {
     [ApiController]
     [Route("[controller]")]
@@ -15,13 +15,12 @@ namespace TaxApi.Controllers
             _logger = logger;
         }
         [HttpPost]
-        [Route("tax")]
-        public async Task<Tax> CalTax(Tax requestTax) {
+        public async Task<Tax> CalTax([FromBody]Tax requestTax) {
 
             var tax = Task.Run(()=>taxCalculation(requestTax));
-            tax.Wait();
-
-           return await tax;
+            tax.Wait(); 
+            
+            return await tax;
         }
 
         public Tax taxCalculation(Tax requestTax){
