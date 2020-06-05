@@ -36,7 +36,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
   handleHttpError(err) {
     if (err instanceof HttpErrorResponse) {
-      this.toastr.error('401', 'Unauthorized');
+      this.toastr.error(err.status.toString(), err.statusText);
     }
     return throwError(err);
   }

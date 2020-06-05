@@ -27,6 +27,7 @@ export class AppComponent implements OnInit {
     this.accountService.checkAuth().subscribe();
     this.isLoggedIn$ = this.accountService.IsLoggedIn$;
     this.name$ = this.accountService.Name$;
+    console.log('Environment:', environment);
   }
 
   login(): void {
