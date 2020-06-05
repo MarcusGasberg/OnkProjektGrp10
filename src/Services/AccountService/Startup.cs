@@ -12,6 +12,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Hosting;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
+using System;
+using Microsoft.AspNetCore.Authentication.Certificate;
+using System.Net;
 
 namespace AccountService
 {
@@ -53,6 +58,11 @@ namespace AccountService
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            });
+
             var builder = services.AddIdentityServer(options =>
                 {
                     options.Events.RaiseErrorEvents = true;
@@ -75,15 +85,11 @@ namespace AccountService
                 })
                 .AddAspNetIdentity<ApplicationUser>();
 
+
             // not recommended for production - you need to store your key material somewhere secure
             builder.AddDeveloperSigningCredential();
 
             services.AddAuthentication();
-
-            services.Configure<ForwardedHeadersOptions>(options =>
-            {
-                options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-            });
         }
 
         public void Configure(IApplicationBuilder app)
@@ -93,14 +99,6 @@ namespace AccountService
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
             }
-
-            app.UseForwardedHeaders();
-
-            app.Use((context, next) =>
-            {
-                context.Request.Scheme = "https";
-                return next();
-            });
 
             app.UseStaticFiles();
 
@@ -114,6 +112,8 @@ namespace AccountService
             {
                 endpoints.MapDefaultControllerRoute();
             });
+
+            ServicePointManager.ServerCertificateValidationCallback += (o, c, ch, er) => true;
         }
     }
 }

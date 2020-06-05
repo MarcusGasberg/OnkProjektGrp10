@@ -16,11 +16,11 @@ spec:
         app: bank
     spec:
       containers:
-        - image: brunton/bank
-          imagePullPolicy: Always
+        - image: bank
+          imagePullPolicy: Never
           name: bank
           ports:
-            - containerPort: 5004
+            - containerPort: 80
           resources: {}
       restartPolicy: Always
       serviceAccountName: ""

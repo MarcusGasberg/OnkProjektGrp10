@@ -29,7 +29,7 @@ spec:
       hostAliases:
         - ip: "192.168.99.100" #Minikube ip
           hostnames:
-            - "stock-web-app.com"
+            - "web-app.stocks"
       restartPolicy: Always
       serviceAccountName: ""
       volumes: null

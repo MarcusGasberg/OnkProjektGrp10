@@ -21,6 +21,15 @@ namespace AuthTestApi
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.UseKestrel(options => options.ConfigureEndpoints());
+                    webBuilder.ConfigureKestrel(serverOptions =>
+                    {
+                        serverOptions.ConfigureHttpsDefaults(listenOptions =>
+                        {
+                            // certificate is an X509Certificate2
+                            listenOptions.ServerCertificate = certificate;
+                        });
+                    });
                 });
     }
 }

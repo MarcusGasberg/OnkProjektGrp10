@@ -5,10 +5,12 @@ metadata:
     app: bank
   name: bank
 spec:
+  type: NodePort
   ports:
-    - name: "5004"
-      port: 5004
-      targetPort: 5004
+    - protocol: TCP
+      name: "80"
+      port: 80
+      targetPort: 80
   selector:
     app: bank
 status:

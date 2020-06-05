@@ -13,6 +13,9 @@ using Microsoft.Extensions.Logging;
 using IdentityServer4.AccessTokenValidation;
 using BankService.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Logging;
+using System.Net;
+using System.Net.Http;
 
 namespace BankService
 {
@@ -55,6 +58,7 @@ namespace BankService
                 options.RequireHttpsMetadata = false;
                 options.ApiName = Configuration["ApiName"];
                 options.ApiSecret = Configuration["ApiSecret"];
+                options.SaveToken = true;
             });
         }
 
@@ -70,6 +74,8 @@ namespace BankService
 
             app.UseAuthentication();
 
+            IdentityModelEventSource.ShowPII = true;
+
             app.UseAuthorization();
 
             app.UseCors("default");
@@ -78,6 +84,8 @@ namespace BankService
             {
                 endpoints.MapControllers();
             });
+
+            ServicePointManager.ServerCertificateValidationCallback += (o, c, ch, er) => true;
 
             using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
