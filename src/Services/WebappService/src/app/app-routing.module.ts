@@ -4,18 +4,24 @@ import { HomeComponent } from './home/home.component';
 import { BuySellStockComponent } from './buy-sell-stock/buy-sell-stock.component';
 import { AuthorizationGuard } from './auth/auth-guard';
 import { AccountComponent } from './account/account.component';
+import { SellstockComponent } from './sellstock/sellstock.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
   {
-    path: 'buysell',
+    path: 'buy',
     component: BuySellStockComponent,
-    canActivate: [AuthorizationGuard],
+    //canActivate: [AuthorizationGuard],
   },
   {
     path: 'account',
     component: AccountComponent,
-    canActivate: [AuthorizationGuard],
+    //canActivate: [AuthorizationGuard],
+  },
+  {
+    path: 'sell',
+    component: SellstockComponent,
+    //canActivate: [AuthorizationGuard],
   },
 ];
 

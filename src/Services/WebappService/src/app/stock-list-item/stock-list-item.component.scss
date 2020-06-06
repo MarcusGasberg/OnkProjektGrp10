@@ -1,4 +1,4 @@
-@import "./../../styles.scss";
+@import './../../styles.scss';
 .container {
   display: flex;
   flex-direction: row;
@@ -8,6 +8,7 @@
   border-width: thin;
   height: 50px;
   color: $text-color;
+  background-color: $background-color;
 
   .change {
     justify-self: flex-end;

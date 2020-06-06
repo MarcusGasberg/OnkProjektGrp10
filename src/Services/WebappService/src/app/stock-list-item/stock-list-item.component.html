@@ -1,7 +1,7 @@
-<div class="container">
+<div class="container" (click)="clicked()">
   <span>{{ stock.name }} </span>
   <span class="change"
-    >{{ stock.change.toFixed(2) }}%
+    >{{ stock.change }}%
     <i
       class="fas fa-arrow-right"
       [ngClass]="{

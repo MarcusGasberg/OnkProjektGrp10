@@ -39,14 +39,14 @@ namespace PaymentApi.Controllers
 
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         
-        var taxdata = new Tax(body.Price, body.BuyerID); 
+        var taxdata = new Tax(body.Price, body.BuyerId); 
 
         var taxedObject = await GetTaxAsync(taxdata);
 
             //call charge requester
         var paymentdata = new {
             Price = taxedObject.Amount,
-            BuyerId = body.BuyerID,
+            BuyerId = body.BuyerId,
             SellerId = body.SellerId };
 
         var payJson =JsonConvert.SerializeObject(paymentdata);
@@ -88,7 +88,7 @@ namespace PaymentApi.Controllers
 
         public string SellerId { get; set; }
 
-        public string BuyerID { get; set; }
+        public string BuyerId { get; set; }
     }
 
     public class Tax{

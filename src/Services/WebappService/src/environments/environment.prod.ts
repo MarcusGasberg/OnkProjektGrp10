@@ -9,7 +9,8 @@ export const environment = {
   taxingControllerUrl: '',
   paymentControllerUrl: '',
   stockMarketController: 'stockmarket',
-  websocketUrl: `stockmarketws`,
+  stockBrokerController: 'stockbroker',
+  websocketUrl: `ws://${window.location.hostname}/stockmarketws`,
   bankUrl: `bank-api`,
   testApiUrl: `bank-api`,
 };

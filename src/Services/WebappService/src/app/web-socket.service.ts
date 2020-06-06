@@ -17,7 +17,7 @@ export class WebSocketService {
   }
 
   private createSocket() {
-    this.ws = webSocket(`ws://${window.location.hostname}/stockmarketws`);
+    this.ws = webSocket(environment.websocketUrl);
     //ws://${window.location.hostname}/stockmarketws
     this.ws.subscribe(this.onMessage, this.onError, this.onComplete);
   }

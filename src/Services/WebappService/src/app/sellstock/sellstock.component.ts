@@ -10,19 +10,19 @@ import Axios from 'axios';
 import { environment } from 'src/environments/environment';
 
 @Component({
-  selector: 'app-buy-sell-stock',
-  templateUrl: './buy-sell-stock.component.html',
-  styleUrls: ['./buy-sell-stock.component.scss'],
+  selector: 'app-sellstock',
+  templateUrl: './sellstock.component.html',
+  styleUrls: ['./sellstock.component.scss'],
 })
-export class BuySellStockComponent implements OnInit {
+export class SellstockComponent implements OnInit {
   public stocks: Stock[];
 
   public stockFrom: FormGroup;
 
   public selectedStock = null;
 
-  public isBuying = true;
-  public isSelling = false;
+  public isBuying = false;
+  public isSelling = true;
   public amount: string;
 
   public numberFormControl = new FormControl('', [
@@ -35,23 +35,28 @@ export class BuySellStockComponent implements OnInit {
       amount: [null, Validators.required],
     });
 
-    Axios.get(`${environment.stockMarketController}`).then((res) => {
-      console.log(res.data);
-      this.stocks = new Array<Stock>();
-      res.data.forEach((stock) => {
-        this.stocks.push({
-          name: stock.name,
-          id: stock.id,
-          change: 0,
-          value: stock.historicPrice[0].price,
-        } as Stock);
-      });
-      this.selectedStock = this.stocks[0];
-    });
+    Axios.get(`${environment.stockMarketController}/userstock/2`).then(
+      (res) => {
+        console.log(res.data);
+        this.stocks = new Array<Stock>();
+        res.data.forEach((stock) => {
+          const amount = stock.seller.find((s) => s.sellerId === '2')
+            .sellingAmount;
+          this.stocks.push({
+            id: stock.id,
+            name: stock.name,
+            change: 0,
+            value: stock.historicPrice[0].price,
+            owned: amount,
+          } as Stock);
+        });
+        this.selectedStock = this.stocks[0];
+      }
+    );
   }
 
-  public buy() {
-    Axios.post(`${environment.stockBrokerController}/Purchase`, {
+  public sell() {
+    Axios.post(`${environment.stockMarketController}/sell`, {
       StockName: this.selectedStock.name,
       // tslint:disable-next-line: radix
       Number: this.stockFrom.value.amount,
@@ -61,6 +66,7 @@ export class BuySellStockComponent implements OnInit {
 
   public selected(id: string) {
     this.selectedStock = this.stocks.find((s) => s.id === id);
+    this.stockFrom.reset();
   }
 
   ngOnInit(): void {}

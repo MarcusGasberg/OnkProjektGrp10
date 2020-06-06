@@ -53,7 +53,7 @@ namespace StockMarketService
         
         public List<Stock> GetUserStock(string userid)
         {
-            return context.Stocks.Where(e => e.Seller.FirstOrDefault(s => s.SellerId == userid) != null).ToList();
+            return context.Stocks.Where(e => e.Seller.FirstOrDefault(s => s.SellerId == userid) != null).Include(s => s.HistoricPrice).Include(s => s.Seller).ToList();
         }
         
         public void UpdateStock(Stock stock) {

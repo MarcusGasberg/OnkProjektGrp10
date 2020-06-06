@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using IdentityModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using StockMarketService.Middleware;
 using StockMarketService.Models;
 
@@ -40,10 +41,10 @@ namespace StockMarketService
         }
         
         [HttpGet]
-        [Route("userstock")]
-        public List<Stock> UserStock() {
+        [Route("userstock/{id}")]
+        public List<Stock> UserStock(string id) {
             //return commands.GetUserStock(User.Claims.FirstOrDefault(c => c.Type.Equals(JwtClaimTypes.Subject))?.Value);
-            return commands.GetUserStock("1");
+            return commands.GetUserStock(id);
         }
         
         [HttpPost]
@@ -56,8 +57,7 @@ namespace StockMarketService
         [Route("sell")]
         public ActionResult SellStock([FromBody] TradeRequest stock)
         {
-            var sellerId = User.Claims.FirstOrDefault(c => c.Type.Equals(JwtClaimTypes.Subject))?.Value;
-            commands.SellStock(stock.StockName, stock.Number, sellerId);
+            commands.SellStock(stock.StockName, stock.Number, "2");
             return StatusCode(200);
         }
         
