@@ -41,13 +41,13 @@ namespace StockMarketService {
                 var data = new {
                     Price = stock.HistoricPrice.FirstOrDefault().Price,
                     StockName = stock.Name,
-                    SellerId = seller.SellerId ,
-                    BuyerId = buyerId
+                    SellerId = "1" ,
+                    BuyerId = "1"
                 };
 
                 var res = await client.PostAsync("payment/payment", new StringContent(JsonSerializer.Serialize(data)));
 
-                if (res.StatusCode != HttpStatusCode.OK || !commands.SellStock(request.StockName, request.Number)) return StatusCode(403);
+                if (res.StatusCode != HttpStatusCode.OK || !commands.BuyStock(request.StockName, request.Number)) return StatusCode(403);
                 
                 return StatusCode(200);
 

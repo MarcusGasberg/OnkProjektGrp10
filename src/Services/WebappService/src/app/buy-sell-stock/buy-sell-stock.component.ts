@@ -1,54 +1,53 @@
 import { Component, OnInit } from '@angular/core';
 import { Stock } from '../models/stock';
 import { FormControl, Validators } from '@angular/forms';
+import Axios from 'axios';
 
-@Component( {
+@Component({
   selector: 'app-buy-sell-stock',
   templateUrl: './buy-sell-stock.component.html',
-  styleUrls: [ './buy-sell-stock.component.scss' ]
-} )
+  styleUrls: ['./buy-sell-stock.component.scss'],
+})
 export class BuySellStockComponent implements OnInit {
+  public stocks: Stock[];
 
-  public stocks = [
-    { change: 5, name: 'Stock One' } as Stock,
-    { change: -3, name: 'Stock Two' } as Stock,
-    { change: -2, name: 'Stock Three' } as Stock,
-    { change: 6, name: 'Stock Four' } as Stock,
-    { change: 4.1, name: 'Stock Five' } as Stock,
-    { change: -2.6, name: 'Stock Six' } as Stock,
-    { change: 5, name: 'Stock One' } as Stock,
-    { change: -3, name: 'Stock Two' } as Stock,
-    { change: -2, name: 'Stock Three' } as Stock,
-    { change: 6, name: 'Stock Four' } as Stock,
-    { change: 4.1, name: 'Stock Five' } as Stock,
-    { change: -2.6, name: 'Stock Six' } as Stock,
-    { change: 5, name: 'Stock One' } as Stock,
-    { change: -3, name: 'Stock Two' } as Stock,
-    { change: -2, name: 'Stock Three' } as Stock,
-    { change: 6, name: 'Stock Four' } as Stock,
-    { change: 4.1, name: 'Stock Five' } as Stock,
-    { change: -2.6, name: 'Stock Six' } as Stock,
-    { change: 5, name: 'Stock One' } as Stock,
-    { change: -3, name: 'Stock Two' } as Stock,
-    { change: -2, name: 'Stock Three' } as Stock,
-    { change: 6, name: 'Stock Four' } as Stock,
-    { change: 4.1, name: 'Stock Five' } as Stock,
-    { change: -2.6, name: 'Stock Six' } as Stock,
-  ];
-
-  public selectedStock = { change: 6, name: 'Stock Four', value: 124 } as Stock;
+  public selectedStock = null;
 
   public isBuying = true;
   public isSelling = false;
+  public amount: string;
 
-  public numberFormControl = new FormControl( '', [
+  public numberFormControl = new FormControl('', [
     Validators.required,
-    Validators.pattern( '[0-9]+' ),
-  ] );
+    Validators.pattern('[0-9]+'),
+  ]);
 
-  constructor () { }
-
-  ngOnInit (): void {
+  constructor() {
+    Axios.get('stockmarket/userstock').then((res) => {
+      console.log(res.data);
+      this.stocks = new Array<Stock>();
+      res.data.forEach((stock) => {
+        this.selectedStock = {
+          name: stock.Name,
+          change: 0,
+          value: 5000,
+        } as Stock;
+        this.stocks.push({
+          name: stock.Name,
+          change: 0,
+          value: 5000,
+        } as Stock);
+      });
+    });
   }
 
+  public buy() {
+    Axios.post('stockbroker/Purchase', {
+      StockName: this.selectedStock.name,
+      // tslint:disable-next-line: radix
+      Number: parseInt(this.amount),
+    });
+  }
+
+  ngOnInit(): void {}
 }

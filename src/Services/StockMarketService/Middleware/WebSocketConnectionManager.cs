@@ -54,8 +54,6 @@ namespace StockMarketService.Middleware {
             });
             var buffer = Encoding.UTF8.GetBytes(json);
             
-            
-            Console.WriteLine(json);
             foreach (var keyValue in _sockets) {
                 keyValue.Value.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
             }

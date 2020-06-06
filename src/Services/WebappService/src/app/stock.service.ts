@@ -28,5 +28,6 @@ export class StockService {
       }
     });
     axios.default.post(`${environment.stockMarketController}/update`);
+    //axios.default.post(`http://localhost:5010/stockmarket/update`);
   }
 }

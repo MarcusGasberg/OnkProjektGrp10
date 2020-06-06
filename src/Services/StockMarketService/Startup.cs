@@ -62,6 +62,15 @@ namespace StockMarketService {
             {
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlite("Data Source=stocks.db"));
+                
+                services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+                    .AddIdentityServerAuthentication(options =>
+                    {
+                        options.Authority = Configuration["Authority"];
+                        options.RequireHttpsMetadata = false;
+                        options.ApiName = Configuration["ApiName"];
+                        options.ApiSecret = Configuration["ApiSecret"];
+                    });
             }
             else
             {
@@ -88,8 +97,9 @@ namespace StockMarketService {
             }
             else
             {
-                app.UseAuthentication();
             }
+            app.UseAuthentication();
+
 
             app.UseWebSockets();
             app.SetupWebsocketServer();

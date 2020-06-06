@@ -4,9 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using IdentityModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using StockMarketService.Middleware;
+using StockMarketService.Models;
 
 namespace StockMarketService
 {
@@ -37,9 +39,25 @@ namespace StockMarketService
             return commands.GetStock(stockname);
         }
         
+        [HttpGet]
+        [Route("userstock")]
+        public List<Stock> UserStock() {
+            //return commands.GetUserStock(User.Claims.FirstOrDefault(c => c.Type.Equals(JwtClaimTypes.Subject))?.Value);
+            return commands.GetUserStock("1");
+        }
+        
         [HttpPost]
         public ActionResult AddStock([FromBody] Stock stock) {
             commands.AddNewStock(stock);
+            return StatusCode(200);
+        }
+        
+        [HttpPost]
+        [Route("sell")]
+        public ActionResult SellStock([FromBody] TradeRequest stock)
+        {
+            var sellerId = User.Claims.FirstOrDefault(c => c.Type.Equals(JwtClaimTypes.Subject))?.Value;
+            commands.SellStock(stock.StockName, stock.Number, sellerId);
             return StatusCode(200);
         }
         

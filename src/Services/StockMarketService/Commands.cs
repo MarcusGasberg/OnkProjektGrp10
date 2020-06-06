@@ -51,6 +51,11 @@ namespace StockMarketService
             return context.Stocks.Include(s => s.HistoricPrice).Include(s => s.Seller).FirstOrDefault(s => s.Name == name);
         }
         
+        public List<Stock> GetUserStock(string userid)
+        {
+            return context.Stocks.Where(e => e.Seller.FirstOrDefault(s => s.SellerId == userid) != null).ToList();
+        }
+        
         public void UpdateStock(Stock stock) {
             Console.WriteLine(JsonSerializer.Serialize(stock));
             context.Stocks.Update(stock);
@@ -67,17 +72,27 @@ namespace StockMarketService
             return seller;
         }
 
-        public bool SellStock(string name, int number) {
+        public bool SellStock(string name, int number, string sellerid) {
             Stock stock = GetStock(name);
-            Seller seller = stock.Seller.FirstOrDefault(s => s.SellingAmount >= number);
+            context.Attach(stock);
+            Seller seller = stock.Seller.FirstOrDefault(s => s.SellerId == sellerid);
             if (seller == null ) {
                 return false;
             }
 
-            stock.Seller.Remove(seller);
-            seller.SellingAmount = seller.SellingAmount - number;
-            stock.Seller.Add(seller);
-            context.Stocks.Update(stock);
+            seller.SellingAmount += number;
+            context.SaveChanges();
+            return true;
+        }
+        
+        public bool BuyStock(string name, int number) {
+            Stock stock = GetStock(name);
+            context.Attach(stock);
+            Seller seller = stock.Seller.FirstOrDefault(s => s.SellingAmount >= number);
+            if (seller == null ) {
+                return false;
+            }
+            seller.SellingAmount -= number;
             context.SaveChanges();
             return true;
         }
