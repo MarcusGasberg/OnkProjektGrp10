@@ -28,12 +28,12 @@ export class BuySellStockComponent implements OnInit {
       this.stocks = new Array<Stock>();
       res.data.forEach((stock) => {
         this.selectedStock = {
-          name: stock.Name,
+          name: stock.name,
           change: 0,
           value: 5000,
         } as Stock;
         this.stocks.push({
-          name: stock.Name,
+          name: stock.name,
           change: 0,
           value: 5000,
         } as Stock);
