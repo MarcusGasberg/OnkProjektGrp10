@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BankService.Migrations
 {
     [DbContext(typeof(BankDbContext))]
-    [Migration("20200527111953_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20200607142426_InitalCreate")]
+    partial class InitalCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -39,6 +39,7 @@ namespace BankService.Migrations
             modelBuilder.Entity("BankService.Models.Payment", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Amount")

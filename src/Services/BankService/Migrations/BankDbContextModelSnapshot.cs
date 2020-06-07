@@ -37,6 +37,7 @@ namespace BankService.Migrations
             modelBuilder.Entity("BankService.Models.Payment", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Amount")

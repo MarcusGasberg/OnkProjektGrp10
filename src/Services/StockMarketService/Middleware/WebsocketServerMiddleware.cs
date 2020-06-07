@@ -31,7 +31,6 @@ namespace StockMarketService.Middleware
         {
             if (context.WebSockets.IsWebSocketRequest)
             {
-                AuthenticateResult authenticateResult = await context.AuthenticateAsync(IdentityServerAuthenticationDefaults.AuthenticationScheme);
                 var webSocket = await context.WebSockets.AcceptWebSocketAsync();
                 await HandleWebsocketMessage(webSocket, async (result, buffer) =>
                 {

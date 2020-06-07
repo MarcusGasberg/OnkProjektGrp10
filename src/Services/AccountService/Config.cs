@@ -26,8 +26,8 @@ namespace AccountService
                 new ApiResource("api1", "Test Api"),
                 new ApiResource("taxingController", "Taxing Controller"),
                 new ApiResource("paymentController", "Payment Controller"),
-                new ApiResource("stockMarketController", "Stock Market Controller", new[] { JwtClaimTypes.Profile, JwtClaimTypes.Name }),
-                new ApiResource("bankController", "Stock Market Controller")
+                new ApiResource("stockMarketController", "Stock Market Controller", new[] { JwtClaimTypes.Profile, JwtClaimTypes.NickName, JwtClaimTypes.Name }),
+                new ApiResource("bankController", "Bank Controller", new[] { JwtClaimTypes.Profile, JwtClaimTypes.NickName, JwtClaimTypes.Name })
             };
 
 

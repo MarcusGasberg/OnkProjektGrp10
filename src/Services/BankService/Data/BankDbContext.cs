@@ -14,12 +14,14 @@ namespace BankService.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Customer>()
-                .HasMany(c => c.ReceivedPayments)
-                .WithOne(p => p.Receiver);
+                .HasMany(c => c.SendPayments)
+                .WithOne(p => p.Sender)
+                .HasForeignKey(p => p.SenderId);
 
             builder.Entity<Customer>()
-                .HasMany(c => c.SendPayments)
-                .WithOne(p => p.Sender);
+                .HasMany(c => c.ReceivedPayments)
+                .WithOne(p => p.Receiver)
+                .HasForeignKey(p => p.ReceiverId);
         }
     }
 }

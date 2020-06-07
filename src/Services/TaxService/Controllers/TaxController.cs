@@ -15,20 +15,18 @@ namespace TaxService
             _logger = logger;
         }
         [HttpPost]
-        public async Task<Tax> CalTax([FromBody]Tax requestTax) {
+        public async Task<Tax> CalTax([FromBody] Tax requestTax)
+        {
 
-            var tax = Task.Run(()=>taxCalculation(requestTax));
-            tax.Wait(); 
-            
+            var tax = Task.Run(() => taxCalculation(requestTax));
+            tax.Wait();
+
             return await tax;
         }
 
-        public Tax taxCalculation(Tax requestTax){
-            return new Tax(requestTax.Amount - requestTax.Amount/100, requestTax.Id);
+        public Tax taxCalculation(Tax requestTax)
+        {
+            return new Tax(requestTax.Amount - requestTax.Amount / 100, requestTax.Id);
         }
-
-
-
-
     }
 }

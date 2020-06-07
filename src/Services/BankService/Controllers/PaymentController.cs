@@ -41,6 +41,7 @@ namespace BankService.Controllers
         {
             if (!ModelState.IsValid)
             {
+                logger.LogDebug($"BadRequest: receiver: {payment.ReceiverId}, sender: {payment.SenderId} ");
                 return BadRequest(ModelState);
             }
 
@@ -49,29 +50,26 @@ namespace BankService.Controllers
 
             if (sender == null)
             {
-                logger.LogDebug($"Sender not found for id: {sender.Id}");
+                logger.LogDebug($"Sender not found for id: {sender?.Id}");
                 return BadRequest("Sender isn't registered");
             }
+
             if (receiver == null)
             {
-                logger.LogDebug($"Receiver not found for id: {sender.Id}");
+                logger.LogDebug($"Receiver not found for id: {sender?.Id}");
                 return BadRequest("Receiver isn't registered");
             }
 
             if (sender.Balance < payment.Amount)
             {
-                logger.LogDebug($"Sender has insufficient funds id: {sender.Id}");
+                logger.LogDebug($"Sender has insufficient funds id: {sender?.Id}");
                 return BadRequest("Insufficient funds");
             }
 
             var dbPayment = new Payment()
             {
-                Sender = sender,
-                Receiver = receiver,
                 Amount = payment.Amount
             };
-
-            dbPayment = (await dbContext.AddAsync(dbPayment)).Entity;
 
             dbContext.AttachRange(new[] { sender, receiver });
 
@@ -83,7 +81,7 @@ namespace BankService.Controllers
 
             await dbContext.SaveChangesAsync();
 
-            logger.LogDebug($"Payment created with id: {dbPayment.Id}");
+            logger.LogInformation($"Payment created with id: {dbPayment.Id}");
 
             return Created($"payment/{dbPayment.Id}", dbPayment);
         }

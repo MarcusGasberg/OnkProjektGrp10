@@ -17,12 +17,12 @@ spec:
     spec:
       containers:
         - image: brunton/tax
-          imagePullPolicy: Always
+          imagePullPolicy: Never
           name: tax
           ports:
             - containerPort: 5003
           resources: {}
       restartPolicy: Always
-      serviceAccountName: ''
+      serviceAccountName: ""
       volumes: null
 status: {}

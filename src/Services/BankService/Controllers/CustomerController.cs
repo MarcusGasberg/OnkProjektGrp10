@@ -34,7 +34,7 @@ namespace BankService.Controllers
         public async Task<ActionResult<Customer>> Get(string id)
         {
             // If the caller doesnt provide id we try getting it from claims
-            id ??= User.Claims.FirstOrDefault(c => c.Type.Equals(JwtClaimTypes.Subject))?.Value;
+            id ??= User.Claims.FirstOrDefault(c => c.Type.Equals(JwtClaimTypes.Name))?.Value;
 
             var customer = await dbContext.Customers.FindAsync(id);
 
@@ -51,7 +51,7 @@ namespace BankService.Controllers
         public async Task<IActionResult> Put(CustomerDto customer)
         {
             // If the caller doesnt provide id we try getting it from claims
-            customer.Id ??= User.Claims.FirstOrDefault(c => c.Type.Equals(JwtClaimTypes.Subject))?.Value;
+            customer.Id ??= User.Claims.FirstOrDefault(c => c.Type.Equals(JwtClaimTypes.Name))?.Value;
 
             if (customer.Id == null)
             {
@@ -82,7 +82,7 @@ namespace BankService.Controllers
         public async Task<IActionResult> Post(CustomerDto customer)
         {
             // If the caller doesnt provide id we try getting it from claims
-            customer.Id ??= User.Claims.FirstOrDefault(c => c.Type.Equals(JwtClaimTypes.Subject))?.Value;
+            customer.Id ??= User.FindFirstValue(JwtClaimTypes.Name);
 
             if (customer.Id == null)
             {
@@ -118,7 +118,7 @@ namespace BankService.Controllers
         public async Task<IActionResult> PostCredits(CustomerDto customer)
         {
             // If the caller doesnt provide id we try getting it from claims
-            customer.Id ??= User.Claims.FirstOrDefault(c => c.Type.Equals(JwtClaimTypes.Subject))?.Value;
+            customer.Id ??= User.Claims.FirstOrDefault(c => c.Type.Equals(JwtClaimTypes.Name))?.Value;
 
             if (customer.Id == null)
             {

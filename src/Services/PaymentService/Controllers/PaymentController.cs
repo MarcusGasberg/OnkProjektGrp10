@@ -15,73 +15,87 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Configuration;
+
 namespace PaymentApi.Controllers
 {
     [ApiController]
     [Microsoft.AspNetCore.Mvc.Route("[controller]")]
-    public class PaymentController : ControllerBase{
+    [Authorize]
+    public class PaymentController : ControllerBase
+    {
         private HttpClient _client = new HttpClient();
-
-
         private readonly ILogger<PaymentController> _logger;
+        private readonly IConfiguration configuration;
 
-        public PaymentController(ILogger<PaymentController> logger)
+        public PaymentController(ILogger<PaymentController> logger, IConfiguration configuration)
         {
             _logger = logger;
+            this.configuration = configuration;
         }
 
         //TODO might want to change this to target specific ports in Kubenetes  
 
         [Microsoft.AspNetCore.Mvc.HttpPost]
-        public async Task<IActionResult> PostPayment(RequestBody body) {
-            
-        var accessToken = await HttpContext.GetTokenAsync("access_token");
+        public async Task<IActionResult> PostPayment(RequestBody body)
+        {
 
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-        
-        var taxdata = new Tax(body.Price, body.BuyerId); 
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
 
-        var taxedObject = await GetTaxAsync(taxdata);
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+            var taxdata = new Tax(body.Price, body.BuyerId);
+
+            var taxedObject = await GetTaxAsync(taxdata);
 
             //call charge requester
-        var paymentdata = new {
-            Price = taxedObject.Amount,
-            BuyerId = body.BuyerId,
-            SellerId = body.SellerId };
+            var paymentdata = new
+            {
+                Amount = taxedObject.Amount,
+                SenderId = body.BuyerId,
+                ReceiverId = body.SellerId
+            };
 
-        var payJson =JsonConvert.SerializeObject(paymentdata);
-        var payContent = new StringContent(payJson,Encoding.UTF8,"application/json");
-        var chargeResponse = await _client.PostAsync("http://localhost:5004/payment",payContent);
-        chargeResponse.EnsureSuccessStatusCode(); 
-        
-        return Ok();
+            var apiUrl = configuration.GetValue<string>("BankApiUrl") + "/payment";
+
+            var payJson = JsonConvert.SerializeObject(paymentdata);
+            var payContent = new StringContent(payJson, Encoding.UTF8, "application/json");
+            var chargeResponse = await _client.PostAsync(apiUrl, payContent);
+            chargeResponse.EnsureSuccessStatusCode();
+
+            return Ok();
 
         }
-    
 
-    public async Task<Tax> GetTaxAsync(Tax tax){
+
+        public async Task<Tax> GetTaxAsync(Tax tax)
+        {
 
             //get tax
             var accessToken = await HttpContext.GetTokenAsync("access_token");
 
-            using( var client = new HttpClient()) {
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-            var json = JsonConvert.SerializeObject(tax);
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+                var json = JsonConvert.SerializeObject(tax);
 
-            var content = new StringContent(json,Encoding.UTF8,"application/json");
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                var response = await _client.PostAsync(requestUri: "http://localhost:55658/tax", content);
-            response.EnsureSuccessStatusCode();
-            var rcontent = await response.Content.ReadAsStringAsync();
+                var apiUrl = configuration.GetValue<string>("TaxApiUrl") + "/tax";
 
-            Tax value = JsonConvert.DeserializeObject<Tax>(rcontent);
+                var response = await _client.PostAsync(requestUri: apiUrl, content);
+                response.EnsureSuccessStatusCode();
+                var rcontent = await response.Content.ReadAsStringAsync();
 
-            return value;
+                Tax value = JsonConvert.DeserializeObject<Tax>(rcontent);
+
+                return value;
 
             }
-     }
-}
-    public class RequestBody{
+        }
+    }
+    public class RequestBody
+    {
         public int Price { get; set; }
 
         public string StockName { get; set; }
@@ -91,7 +105,8 @@ namespace PaymentApi.Controllers
         public string BuyerId { get; set; }
     }
 
-    public class Tax{
+    public class Tax
+    {
         public int Amount { set; get; }
         public string Id { set; get; }
 
@@ -100,10 +115,11 @@ namespace PaymentApi.Controllers
             Amount = amount;
             Id = id;
         }
-    
+
     }
 
-    public class PaymentDTO{
+    public class PaymentDTO
+    {
 
         public int Amount { get; set; }
 

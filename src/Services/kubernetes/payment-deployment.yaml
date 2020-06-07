@@ -17,12 +17,12 @@ spec:
     spec:
       containers:
         - image: brunton/payment
-          imagePullPolicy: Always
+          imagePullPolicy: Never
           name: payment
           ports:
             - containerPort: 5002
           resources: {}
       restartPolicy: Always
-      serviceAccountName: ''
+      serviceAccountName: ""
       volumes: null
 status: {}

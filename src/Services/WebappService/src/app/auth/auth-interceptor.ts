@@ -29,15 +29,6 @@ export class AuthInterceptor implements HttpInterceptor {
       .set('Content-Type', 'application/json');
 
     const authReq = req.clone({ headers });
-    return next
-      .handle(authReq)
-      .pipe(catchError((err) => this.handleHttpError(err)));
-  }
-
-  handleHttpError(err) {
-    if (err instanceof HttpErrorResponse) {
-      this.toastr.error(err.status.toString(), err.statusText);
-    }
-    return throwError(err);
+    return next.handle(authReq);
   }
 }

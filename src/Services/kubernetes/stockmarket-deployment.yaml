@@ -17,12 +17,12 @@ spec:
     spec:
       containers:
         - image: brunton/stockmarket
-          imagePullPolicy: Always
+          imagePullPolicy: Never
           name: stockmarket
           ports:
             - containerPort: 80
           resources: {}
       restartPolicy: Always
-      serviceAccountName: ''
+      serviceAccountName: ""
       volumes: null
 status: {}

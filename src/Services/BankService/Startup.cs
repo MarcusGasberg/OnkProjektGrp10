@@ -31,7 +31,10 @@ namespace BankService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers()
+            .AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
 
             var clientOrigins = new List<string>();
             Configuration.GetSection("ClientUrls").Bind(clientOrigins);
