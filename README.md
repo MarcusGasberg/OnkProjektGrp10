@@ -11,6 +11,12 @@ Add to the bottom of /etc/host the ip of minikube and then the following urls:
 192.168.99.100  web-app.stocks
 192.168.99.100  identity-server.stocks
 ```
+Make Minikube your docker enviroment and enable ingress:
+``` 
+minikube -p minikube docker-env | Invoke-Expression
+minikube addons enable ingress
+```
+
 Create docker images:
 ```
 ../src/Services>>> docker-compose build
