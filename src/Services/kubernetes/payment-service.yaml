@@ -2,15 +2,14 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: stockmarket
-  name: stockmarket
+    app: payment
+  name: payment
 spec:
-  type: LoadBalancer
   ports:
-    - name: '80'
-      port: 80
+    - name: '5002'
+      port: 5002
       targetPort: 80
   selector:
-    app: stockmarket
+    app: payment
 status:
   loadBalancer: {}

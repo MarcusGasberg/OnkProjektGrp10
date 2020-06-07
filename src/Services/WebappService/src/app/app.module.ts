@@ -35,6 +35,8 @@ import { BankAccountComponent } from './bank-account/bank-account.component';
 import { BankRegisterComponent } from './bank-register/bank-register.component';
 import { AddCreditsComponent } from './add-credits/add-credits.component';
 import { ToastrModule } from 'ngx-toastr';
+import { StocklistComponent } from './stocklist/stocklist.component';
+import { SellstockComponent } from './sellstock/sellstock.component';
 
 export function configureAuth(oidcConfigService: OidcConfigService) {
   return () =>
@@ -61,6 +63,8 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
     BankAccountComponent,
     BankRegisterComponent,
     AddCreditsComponent,
+    StocklistComponent,
+    SellstockComponent,
   ],
   imports: [
     BrowserModule,

@@ -20,7 +20,7 @@ spec:
         app: web-app
     spec:
       containers:
-        - image: web-app
+        - image: brunton/web-app
           imagePullPolicy: Never
           name: web-app
           ports:

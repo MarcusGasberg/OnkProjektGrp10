@@ -14,25 +14,33 @@ namespace StockMarketService
     public class Commands
     {
         private ApplicationDbContext context;
+        private WebSocketConnectionManager manager;
 
-        public Commands(ApplicationDbContext context)
+        public Commands(ApplicationDbContext context, WebSocketConnectionManager manager)
         {
             this.context = context;
+            this.manager = manager;
         }
-        public void AddNewStock(Stock stock, WebSocketConnectionManager manager) {
+        public void AddNewStock(Stock stock) {
             Console.WriteLine(JsonSerializer.Serialize(stock));
             context.Stocks.Add(stock);
             context.SaveChanges();
-            var updateTask = new Thread(async () => await manager.UpdateAllClients(GetStocks()));
-            updateTask.Start();
+            
+            UpdateClients();
+            
         }
 
-        public void UpdateStockPrice(string stockName,decimal newStockPrice, WebSocketConnectionManager manager) {
+        public void UpdateClients()
+        {
+            var allStocks = GetStocks();
+            manager.UpdateAllClients(allStocks);
+        }
+
+        public void UpdateStockPrice(string stockName,decimal newStockPrice) {
             var stock = context.Stocks.Find(stockName);
             stock.HistoricPrice.Add(new StockPrice(newStockPrice, DateTime.Now));
             context.Stocks.Update(stock);
-            var updateTask = new Thread(async () => await manager.UpdateAllClients(GetStocks()));
-            updateTask.Start();
+            UpdateClients();
         }
 
         public List<Stock> GetStocks() {
@@ -43,12 +51,16 @@ namespace StockMarketService
             return context.Stocks.Include(s => s.HistoricPrice).Include(s => s.Seller).FirstOrDefault(s => s.Name == name);
         }
         
-        public void UpdateStock(Stock stock, WebSocketConnectionManager manager) {
+        public List<Stock> GetUserStock(string userid)
+        {
+            return context.Stocks.Where(e => e.Seller.FirstOrDefault(s => s.SellerId == userid) != null).Include(s => s.HistoricPrice).Include(s => s.Seller).ToList();
+        }
+        
+        public void UpdateStock(Stock stock) {
             Console.WriteLine(JsonSerializer.Serialize(stock));
             context.Stocks.Update(stock);
             context.SaveChanges();
-            var updateTask = new Thread(async () => await manager.UpdateAllClients(GetStocks()));
-            updateTask.Start();
+            UpdateClients();
         }
         
         public Seller GetSeller(string name, int number) {
@@ -60,17 +72,27 @@ namespace StockMarketService
             return seller;
         }
 
-        public bool SellStock(string name, int number) {
+        public bool SellStock(string name, int number, string sellerid) {
             Stock stock = GetStock(name);
-            Seller seller = stock.Seller.FirstOrDefault(s => s.SellingAmount >= number);
+            context.Attach(stock);
+            Seller seller = stock.Seller.FirstOrDefault(s => s.SellerId == sellerid);
             if (seller == null ) {
                 return false;
             }
 
-            stock.Seller.Remove(seller);
-            seller.SellingAmount = seller.SellingAmount - number;
-            stock.Seller.Add(seller);
-            context.Stocks.Update(stock);
+            seller.SellingAmount += number;
+            context.SaveChanges();
+            return true;
+        }
+        
+        public bool BuyStock(string name, int number) {
+            Stock stock = GetStock(name);
+            context.Attach(stock);
+            Seller seller = stock.Seller.FirstOrDefault(s => s.SellingAmount >= number);
+            if (seller == null ) {
+                return false;
+            }
+            seller.SellingAmount -= number;
             context.SaveChanges();
             return true;
         }

@@ -1,6 +1,6 @@
 <div>
   <div class="left-container">
-    <p class="stocks-title">Stocks</p>
+    <p class="stocks-title">Your stocks</p>
     <cdk-virtual-scroll-viewport itemSize="50" class="stock-container">
       <app-stock-list-item
         class="list-item"
@@ -35,10 +35,10 @@
         </mat-form-field>
         <p>Total: {{ NumSotcks.value * selectedStock.value }}$</p>
       </form>
-      <button class="exchange-btn" *ngIf="isBuying === true" (click)="buy()">
+      <button class="exchange-btn" *ngIf="isBuying === true">
         <span>Buy Stocks</span>
       </button>
-      <button class="exchange-btn" *ngIf="isSelling === true">
+      <button class="exchange-btn" *ngIf="isSelling === true" (click)="sell()">
         <span>Sell Stocks</span>
       </button>
     </div>
@@ -46,6 +46,10 @@
       <div>
         <span>Price</span>
         <span>{{ selectedStock.value }}</span>
+      </div>
+      <div>
+        <span>Stocks For Sale</span>
+        <span>{{ selectedStock.owned }}</span>
       </div>
     </div>
   </div>

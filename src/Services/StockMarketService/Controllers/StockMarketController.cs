@@ -4,9 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using IdentityModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using StockMarketService.Middleware;
+using StockMarketService.Models;
 
 namespace StockMarketService
 {
@@ -18,11 +21,11 @@ namespace StockMarketService
         private readonly WebSocketConnectionManager _manager;
         private Commands commands;
 
-        public StockMarketController(ILogger<StockMarketController> logger, WebSocketConnectionManager connectionManager, ApplicationDbContext dbContext)
+        public StockMarketController(ILogger<StockMarketController> logger, WebSocketConnectionManager connectionManager, Commands commands)
         {
             _logger = logger;
             _manager = connectionManager;
-            commands = new Commands(dbContext);
+            this.commands = commands;
         }
 
         [HttpGet]
@@ -37,14 +40,38 @@ namespace StockMarketService
             return commands.GetStock(stockname);
         }
         
+        [HttpGet]
+        [Route("userstock/{id}")]
+        public List<Stock> UserStock(string id) {
+            //return commands.GetUserStock(User.Claims.FirstOrDefault(c => c.Type.Equals(JwtClaimTypes.Subject))?.Value);
+            return commands.GetUserStock(id);
+        }
+        
         [HttpPost]
-        public void AddStock([FromBody] Stock stock) {
-            commands.AddNewStock(stock, _manager);
+        public ActionResult AddStock([FromBody] Stock stock) {
+            commands.AddNewStock(stock);
+            return StatusCode(200);
+        }
+        
+        [HttpPost]
+        [Route("sell")]
+        public ActionResult SellStock([FromBody] TradeRequest stock)
+        {
+            commands.SellStock(stock.StockName, stock.Number, "2");
+            return StatusCode(200);
+        }
+        
+        [HttpPost]
+        [Route("{update}")]
+        public ActionResult UpdateClients() {
+            commands.UpdateClients();
+            return StatusCode(200);
         }
         
         [HttpPut]
-        private void PutStock(Stock stock) {
-            commands.UpdateStock(stock, _manager);
+        private ActionResult PutStock(Stock stock) {
+            commands.UpdateStock(stock);
+            return StatusCode(200);
         }
 
     }

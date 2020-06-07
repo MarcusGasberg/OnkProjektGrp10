@@ -16,7 +16,7 @@ spec:
         app: account
     spec:
       containers:
-        - image: account
+        - image: brunton/account
           imagePullPolicy: Never
           name: account
           ports:

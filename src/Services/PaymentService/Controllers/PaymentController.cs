@@ -3,23 +3,22 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Web.Http;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
-
+using Microsoft.AspNetCore.WebUtilities;
 namespace PaymentApi.Controllers
 {
-
-
     [ApiController]
-    [Route("[controller]")]
+    [Microsoft.AspNetCore.Mvc.Route("[controller]")]
     public class PaymentController : ControllerBase{
         private HttpClient _client = new HttpClient();
 
@@ -33,40 +32,55 @@ namespace PaymentApi.Controllers
 
         //TODO might want to change this to target specific ports in Kubenetes  
 
-        [HttpPost]
-        [Authorize]
+        [Microsoft.AspNetCore.Mvc.HttpPost]
         public async Task<IActionResult> PostPayment(RequestBody body) {
             
         var accessToken = await HttpContext.GetTokenAsync("access_token");
 
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         
-        var taxdata = new {
-            Price = body.Price,
-            BuyerID = body.BuyerID
-            };
-            
-            //get tax
+        var taxdata = new Tax(body.Price, body.BuyerId); 
 
-        var taxResponse = await _client.PostAsync(requestUri: "https://localhost:5003", new StringContent(JsonSerializer.Serialize(taxdata)));
-
-        taxResponse.EnsureSuccessStatusCode();
+        var taxedObject = await GetTaxAsync(taxdata);
 
             //call charge requester
         var paymentdata = new {
-            Price = taxResponse.Price,
-            BuyerId = body.BuyerID,
+            Price = taxedObject.Amount,
+            BuyerId = body.BuyerId,
             SellerId = body.SellerId };
 
-            var chargeResponse = await _client.PostAsync("http://localhost:5004/payment",new StringContent(JsonSerializer.Serialize(paymentdata)));
-
-            chargeResponse.EnsureSuccessStatusCode();
-
-            return Ok();
+        var payJson =JsonConvert.SerializeObject(paymentdata);
+        var payContent = new StringContent(payJson,Encoding.UTF8,"application/json");
+        var chargeResponse = await _client.PostAsync("http://localhost:5004/payment",payContent);
+        chargeResponse.EnsureSuccessStatusCode(); 
+        
+        return Ok();
 
         }
-    }
+    
 
+    public async Task<Tax> GetTaxAsync(Tax tax){
+
+            //get tax
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+
+            using( var client = new HttpClient()) {
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            var json = JsonConvert.SerializeObject(tax);
+
+            var content = new StringContent(json,Encoding.UTF8,"application/json");
+
+                var response = await _client.PostAsync(requestUri: "http://localhost:55658/tax", content);
+            response.EnsureSuccessStatusCode();
+            var rcontent = await response.Content.ReadAsStringAsync();
+
+            Tax value = JsonConvert.DeserializeObject<Tax>(rcontent);
+
+            return value;
+
+            }
+     }
+}
     public class RequestBody{
         public int Price { get; set; }
 
@@ -74,7 +88,7 @@ namespace PaymentApi.Controllers
 
         public string SellerId { get; set; }
 
-        public string BuyerID { get; set; }
+        public string BuyerId { get; set; }
     }
 
     public class Tax{

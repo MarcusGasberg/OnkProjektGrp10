@@ -2,27 +2,27 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: bank
-  name: bank
+    app: tax
+  name: tax
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: bank
+      app: tax
   strategy: {}
   template:
     metadata:
       labels:
-        app: bank
+        app: tax
     spec:
       containers:
-        - image: brunton/bank
-          imagePullPolicy: Never
-          name: bank
+        - image: brunton/tax
+          imagePullPolicy: Always
+          name: tax
           ports:
-            - containerPort: 80
+            - containerPort: 5003
           resources: {}
       restartPolicy: Always
-      serviceAccountName: ""
+      serviceAccountName: ''
       volumes: null
 status: {}

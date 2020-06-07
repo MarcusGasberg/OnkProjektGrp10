@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TaxApi
+namespace TaxService
 {
     public class Tax
     {
@@ -14,6 +14,11 @@ namespace TaxApi
         {
             Amount = amount;
             Id = id;
+        }
+
+        public Tax()
+        {
+            
         }
 
     }

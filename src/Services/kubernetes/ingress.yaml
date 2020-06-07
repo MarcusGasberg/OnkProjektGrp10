@@ -27,10 +27,3 @@ spec:
             backend:
               serviceName: account
               servicePort: 80
-    - host: bank.stocks
-      http:
-        paths:
-          - path: /
-            backend:
-              serviceName: bank
-              servicePort: 80

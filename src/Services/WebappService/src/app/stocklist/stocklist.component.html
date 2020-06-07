@@ -1,0 +1,7 @@
+<cdk-virtual-scroll-viewport itemSize="50" class="stock-container">
+  <app-stock-list-item
+    class="list-item"
+    *cdkVirtualFor="let stock of stockservice.stocklist"
+    [stock]="stock"
+  ></app-stock-list-item>
+</cdk-virtual-scroll-viewport>

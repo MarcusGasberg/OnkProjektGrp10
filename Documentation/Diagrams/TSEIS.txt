@@ -1,7 +1,6 @@
 title TSEIS
 
-participant Stock Requester
-participant Stock Provider
+participant Web Client
 participant Stock Broker
 participant Stock Market Controller
 participant Taxing Controller
@@ -10,56 +9,56 @@ participant User Controller
 participant Bank
 
 ==List Stock For Sale==
-Stock Provider->Stock Market Controller:ListStockForSale
+Web Client->Stock Broker:Sell Stock
+activate Stock Broker
+Stock Broker->Stock Market Controller:SellStock(TradeRequest)
+deactivate Stock Broker
 activate Stock Market Controller
-Stock Provider<--Stock Market Controller:Listing Created
+Web Client<--Stock Market Controller:Listing Created
 deactivate Stock Market Controller
-space 
-
+space
 ==Show Available Stocks==
-Stock Requester->Stock Market Controller:GetStocks() 
+Web Client->Stock Broker:Get Stocks
+activate Stock Broker
+Stock Broker->Stock Market Controller:GetStocks() 
+deactivate Stock Broker
 activate Stock Market Controller
-Stock Market Controller-->Stock Requester:Stocks[]
+Stock Market Controller-->Web Client:Stocks[]
 deactivate Stock Market Controller
 space
 
-==Purchase Stock==
-Stock Requester->Stock Broker:Purchase Stock
-activate Stock Broker
-Stock Broker->Stock Market Controller:Get Stock
-deactivate Stock Broker
-activate Stock Market Controller
-Stock Broker<--Stock Market Controller:Stock
-deactivate Stock Market Controller
-activate Stock Broker
-Stock Broker->Payment Contoller:Purchase Stock
-deactivate Stock Broker
-activate Payment Contoller
-Payment Contoller->User Controller:Get Users
-deactivate Payment Contoller
+==Login==
+
+Web Client->User Controller:Login(loginDTO) 
 activate User Controller
-Payment Contoller<--User Controller:Provider & Requester
+User Controller->User Controller:setToken()
+User Controller-->Web Client:Redirect(returnUrl)
 deactivate User Controller
+space
+
+==Purchase Stock==
+space 
+
+Web Client->Stock Broker:Purchase Stock 
+activate Stock Broker
+Stock Broker->Payment Contoller:Purchase Stock(PurchaseDTO)
+deactivate Stock Broker
 activate Payment Contoller
-Payment Contoller->Taxing Controller:Get Tax
+deactivate Payment Contoller
+activate Payment Contoller
+Payment Contoller->Taxing Controller:Get Tax(AmountToBeTaxed)
 deactivate Payment Contoller
 activate Taxing Controller
 Payment Contoller<--Taxing Controller:TaxAmount
 deactivate Taxing Controller
 activate Payment Contoller
-Payment Contoller->Bank:Charge Requester
+Payment Contoller->Bank:Handle Payment(PaymentDTO)\n
 deactivate Payment Contoller
 activate Bank
-Payment Contoller<--Bank:Charge Complete
 deactivate Bank
 activate Payment Contoller
-Payment Contoller->Taxing Controller:Pay Tax
 deactivate Payment Contoller
-activate Taxing Controller
-Taxing Controller-->Payment Contoller:Payment Complete
-deactivate Taxing Controller
 activate Payment Contoller
-Payment Contoller->Bank:Pay Provider
 deactivate Payment Contoller
 activate Bank
 Payment Contoller<--Bank:Payment Complete
@@ -68,8 +67,7 @@ activate Payment Contoller
 Stock Broker<--Payment Contoller:Payment Complete
 deactivate Payment Contoller
 activate Stock Broker
-Stock Broker->Stock Market Controller:UpdateStock
-Stock Requester<--Stock Broker:Purchase Complete
+Web Client<--Stock Broker:Purchase Complete
 deactivate Stock Broker
 
 

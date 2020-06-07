@@ -20,32 +20,42 @@ namespace StockMarketService.Middleware {
 
         public string AddSocket(WebSocket socket) {
             var id = Guid.NewGuid().ToString();
+            Console.WriteLine("Adding");
             _sockets.TryAdd(id, socket);
             return id;
         }
 
-        public async Task SendMessage(string wsId, string topic, object data) {
+        public async Task SendMessage(string wsId, string topic, string action, object data) {
             GetAllSockets().TryGetValue(wsId, out WebSocket socket);
             var msg = new WsMessage() {
                 data = data,
-                topic = "stocks"
+                topic = topic,
+                action = action
             };
-            var json = JsonConvert.SerializeObject(msg);
+            var json = JsonConvert.SerializeObject(msg, Formatting.None, new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            });
             var buffer = Encoding.UTF8.GetBytes(json);
             if (socket != null) await socket.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
         }
 
-        public async Task UpdateAllClients(List<Stock> stocks) {
+        public void UpdateAllClients(List<Stock> stocks) {
 
             var msg = new WsMessage() {
                 data = stocks,
-                topic = "stocks"
+                topic = "stocks",
+                action = "update"
             };
 
-            var json = JsonSerializer.Serialize(msg);
+            var json = JsonConvert.SerializeObject(msg, Formatting.None, new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            });
             var buffer = Encoding.UTF8.GetBytes(json);
+            
             foreach (var keyValue in _sockets) {
-                await keyValue.Value.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
+                keyValue.Value.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
             }
         }
         

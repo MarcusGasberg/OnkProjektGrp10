@@ -12,8 +12,9 @@ export const environment = {
     'openid profile api1 taxingController paymentController stockMarketController bankController',
   taxingControllerUrl: '',
   paymentControllerUrl: '',
-  stockMarketController: '',
-  websocketUrl: 'ws://localhost:5000',
+  stockMarketController: 'http://localhost:5010/stockmarket',
+  stockBrokerController: 'http://localhost:5010/stockbroker',
+  websocketUrl: 'ws://localhost:5010',
   bankUrl: 'http://localhost:5004',
   testApiUrl: 'http://localhost:5004',
 };

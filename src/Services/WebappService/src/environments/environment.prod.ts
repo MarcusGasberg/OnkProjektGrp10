@@ -8,8 +8,9 @@ export const environment = {
     'openid profile taxingController paymentController stockMarketController bankController',
   taxingControllerUrl: '',
   paymentControllerUrl: '',
-  stockMarketController: '',
-  websocketUrl: '',
-  bankUrl: `http://bank.stocks`,
-  testApiUrl: `http://bank.stocks`,
+  stockMarketController: 'stockmarket',
+  stockBrokerController: 'stockbroker',
+  websocketUrl: `ws://${window.location.hostname}/stockmarketws`,
+  bankUrl: `bank-api`,
+  testApiUrl: `bank-api`,
 };
