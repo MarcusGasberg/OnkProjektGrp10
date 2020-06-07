@@ -6,8 +6,8 @@ import {
   FormGroup,
   FormBuilder,
 } from '@angular/forms';
-import Axios from 'axios';
 import { environment } from 'src/environments/environment';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-buy-sell-stock',
@@ -30,32 +30,39 @@ export class BuySellStockComponent implements OnInit {
     Validators.pattern('[0-9]+'),
   ]);
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private httpClient: HttpClient
+  ) {
     this.stockFrom = formBuilder.group({
       amount: [null, Validators.required],
     });
 
-    Axios.get(`${environment.stockMarketController}`).then((res) => {
-      console.log(res.data);
-      this.stocks = new Array<Stock>();
-      res.data.forEach((stock) => {
-        this.stocks.push({
-          name: stock.name,
-          id: stock.id,
-          change: 0,
-          value: stock.historicPrice[0].price,
-        } as Stock);
+    httpClient
+      .get<Stock[]>(`${environment.stockMarketController}`)
+      .subscribe((res) => {
+        console.log(res);
+        this.stocks = new Array<Stock>();
+        res.forEach((stock) => {
+          this.stocks.push({
+            name: stock.name,
+            id: stock.id,
+            change: 0,
+            value: stock.historicPrice[0].price,
+          } as Stock);
+        });
+        this.selectedStock = this.stocks[0];
       });
-      this.selectedStock = this.stocks[0];
-    });
   }
 
   public buy() {
-    Axios.post(`${environment.stockBrokerController}/Purchase`, {
-      StockName: this.selectedStock.name,
-      // tslint:disable-next-line: radix
-      Number: this.stockFrom.value.amount,
-    });
+    this.httpClient
+      .post(`${environment.stockBrokerController}/Purchase`, {
+        StockName: this.selectedStock.name,
+        // tslint:disable-next-line: radix
+        Number: this.stockFrom.value.amount,
+      })
+      .subscribe();
     this.stockFrom.reset();
   }
 

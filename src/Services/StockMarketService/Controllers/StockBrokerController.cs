@@ -13,12 +13,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
-namespace StockMarketService {
-    
-    
+namespace StockMarketService
+{
+
+
     [ApiController]
     [Route("[controller]")]
-    public class StockBrokerController : Controller {
+    public class StockBrokerController : Controller
+    {
 
         public StockBrokerController(Commands commands)
         {
@@ -30,35 +32,36 @@ namespace StockMarketService {
 
         [HttpPost]
         [Route("purchase")]
-        public async Task<StatusCodeResult> SellStock([FromBody] TradeRequest request) {
-            if (commands.GetSeller(request.StockName, request.Number) != null) {
+        public async Task<StatusCodeResult> SellStock([FromBody] TradeRequest request)
+        {
+            if (commands.GetSeller(request.StockName, request.Number) != null)
+            {
                 var stock = commands.GetStock(request.StockName);
                 var seller = commands.GetSeller(request.StockName, request.Number);
                 var buyerId = User.Claims.FirstOrDefault(c => c.Type.Equals(JwtClaimTypes.Subject))?.Value;
                 var accessToken = await HttpContext.GetTokenAsync("access_token");
                 var client = new HttpClient();
-                //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
-                var data = new {
+                var data = new
+                {
                     Price = stock.HistoricPrice.FirstOrDefault().Price,
                     StockName = stock.Name,
-                    SellerId = "1" ,
-                    BuyerId = "1"
+                    SellerId = seller.Id,
+                    BuyerId = buyerId
                 };
 
-
-
                 var res = await client.PostAsync("http://localhost:5004/payment", new StringContent(JsonSerializer.Serialize(data)));
-                
+
                 Console.WriteLine(await res.Content.ReadAsStringAsync());
 
                 if (res.StatusCode != HttpStatusCode.OK || !commands.BuyStock(request.StockName, request.Number)) return StatusCode(403);
-                
+
                 return StatusCode(200);
 
             }
             return StatusCode(403);
         }
-         
+
     }
 }

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { WebSocketService } from './web-socket.service';
 import { Stock } from './models/stock';
-import * as axios from 'axios';
 import { environment } from 'src/environments/environment.prod';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +10,10 @@ import { environment } from 'src/environments/environment.prod';
 export class StockService {
   public stocklist: Stock[];
 
-  constructor(private websocketService: WebSocketService) {
+  constructor(
+    private websocketService: WebSocketService,
+    private httpClient: HttpClient
+  ) {
     websocketService.subscribe('stocks');
     websocketService.subjects.get('stocks').subscribe((stocks) => {
       if (stocks !== null && stocks.action === 'update') {
@@ -27,7 +30,8 @@ export class StockService {
         });
       }
     });
-    axios.default.post(`${environment.stockMarketController}/update`);
-    //axios.default.post(`http://localhost:5010/stockmarket/update`);
+    httpClient
+      .post(`${environment.stockMarketController}/update`, {})
+      .subscribe();
   }
 }

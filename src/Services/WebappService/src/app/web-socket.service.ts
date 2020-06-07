@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Subject, Observable, Observer, BehaviorSubject } from 'rxjs';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
+import { OidcSecurityService } from 'angular-auth-oidc-client';
 
 @Injectable({
   providedIn: 'root',
@@ -12,13 +13,14 @@ export class WebSocketService {
 
   public subjects = new Map<string, BehaviorSubject<any>>();
 
-  constructor() {
+  constructor(private oidc: OidcSecurityService) {
     this.createSocket();
   }
 
   private createSocket() {
-    this.ws = webSocket(environment.websocketUrl);
-    //ws://${window.location.hostname}/stockmarketws
+    this.ws = webSocket(
+      environment.websocketUrl + `?access_token=${this.oidc.getToken()}`
+    );
     this.ws.subscribe(this.onMessage, this.onError, this.onComplete);
   }
 

@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
+using IdentityModel;
 using IdentityServer4;
 using IdentityServer4.Models;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ namespace AccountService
                 new ApiResource("api1", "Test Api"),
                 new ApiResource("taxingController", "Taxing Controller"),
                 new ApiResource("paymentController", "Payment Controller"),
-                new ApiResource("stockMarketController", "Stock Market Controller"),
+                new ApiResource("stockMarketController", "Stock Market Controller", new[] { JwtClaimTypes.Profile, JwtClaimTypes.Name }),
                 new ApiResource("bankController", "Stock Market Controller")
             };
 
@@ -42,7 +43,16 @@ namespace AccountService
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
                     ClientSecrets = { new Secret("511536EF-F270-4058-80CA-1C89C192F69A".Sha256()) },
 
-                    AllowedScopes = { "api1", "taxingController", "paymentController", "stockMarketController", "bankController" },
+                    AllowedScopes = {
+                        "api1",
+                        "taxingController",
+                        "paymentController",
+                        "stockMarketController",
+                        "bankController",
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.Email
+                     },
                 },
                 new Client
                 {

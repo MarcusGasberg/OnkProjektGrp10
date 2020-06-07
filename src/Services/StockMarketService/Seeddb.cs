@@ -8,6 +8,11 @@ namespace StockMarketService
     {
         public static void run(ApplicationDbContext context)
         {
+            if (context.Database.EnsureCreated())
+            {
+                return;
+            }
+
             var lst = new List<Stock>() {
                 new Stock()
                 {
@@ -20,7 +25,7 @@ namespace StockMarketService
                     {
                         new Seller()
                         {
-                            SellerId = "Edward",
+                            SellerId = "Bob Smith",
                             SellingAmount = 1000
                         }
                     }
@@ -36,7 +41,7 @@ namespace StockMarketService
                     {
                         new Seller()
                         {
-                            SellerId = "Edward",
+                            SellerId = "Alice Smith",
                             SellingAmount = 6231
                         }
                     }
@@ -52,16 +57,14 @@ namespace StockMarketService
                     {
                         new Seller()
                         {
-                            SellerId = "Edward",
+                            SellerId = "Bob Smith",
                             SellingAmount = 2345
                         }
                     }
                 }
             };
-            foreach (var stock in lst)
-            {
-                context.Stocks.Add(stock);
-            }
+            context.Stocks.AddRange(lst);
+            context.SaveChanges();
         }
     }
 }

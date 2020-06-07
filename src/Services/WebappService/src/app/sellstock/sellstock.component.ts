@@ -6,8 +6,11 @@ import {
   FormGroup,
   FormBuilder,
 } from '@angular/forms';
-import Axios from 'axios';
 import { environment } from 'src/environments/environment';
+import { HttpClient } from '@angular/common/http';
+import { OidcSecurityService } from 'angular-auth-oidc-client';
+import { AccountService } from '../account/account.service';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-sellstock',
@@ -16,6 +19,7 @@ import { environment } from 'src/environments/environment';
 })
 export class SellstockComponent implements OnInit {
   public stocks: Stock[];
+  public name = '';
 
   public stockFrom: FormGroup;
 
@@ -30,37 +34,43 @@ export class SellstockComponent implements OnInit {
     Validators.pattern('[0-9]+'),
   ]);
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private httpClient: HttpClient,
+    private accountService: AccountService
+  ) {
     this.stockFrom = formBuilder.group({
       amount: [null, Validators.required],
     });
-
-    Axios.get(`${environment.stockMarketController}/userstock/2`).then(
-      (res) => {
-        console.log(res.data);
-        this.stocks = new Array<Stock>();
-        res.data.forEach((stock) => {
-          const amount = stock.seller.find((s) => s.sellerId === '2')
-            .sellingAmount;
-          this.stocks.push({
-            id: stock.id,
-            name: stock.name,
-            change: 0,
-            value: stock.historicPrice[0].price,
-            owned: amount,
-          } as Stock);
-        });
-        this.selectedStock = this.stocks[0];
-      }
-    );
+    combineLatest([
+      httpClient.get<Stock[]>(`${environment.stockMarketController}/userstock`),
+      accountService.Name$,
+    ]).subscribe(([res, name]) => {
+      console.log(res);
+      this.stocks = new Array<Stock>();
+      res.forEach((stock) => {
+        const amount = stock.seller.find((s) => s.sellerId === name)
+          .sellingAmount;
+        this.stocks.push({
+          id: stock.id,
+          name: stock.name,
+          change: 0,
+          value: stock.historicPrice[0].price,
+          owned: amount,
+        } as Stock);
+      });
+      this.selectedStock = this.stocks[0];
+    });
   }
 
   public sell() {
-    Axios.post(`${environment.stockMarketController}/sell`, {
-      StockName: this.selectedStock.name,
-      // tslint:disable-next-line: radix
-      Number: this.stockFrom.value.amount,
-    });
+    this.httpClient
+      .post(`${environment.stockMarketController}/sell`, {
+        StockName: this.selectedStock.name,
+        // tslint:disable-next-line: radix
+        Number: this.stockFrom.value.amount,
+      })
+      .subscribe();
     this.stockFrom.reset();
   }
 
