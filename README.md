@@ -3,7 +3,7 @@
 Start minikube and get ip:
 ``` cmd
 >>> minikube start
->>> minikuibe ip
+>>> minikube ip
 192.168.99.100
 ```
 Add to the bottom of /etc/host the ip of minikube and then the following urls:
